@@ -103,7 +103,7 @@ function isUndefined(obj) {
   return obj === void 0;
 }
 function isSameType(objA, objB) {
-  return typeof objA === typeof objB && objA.constructor === objB.constructor;
+  return isNull(objA) && isNull(objB) || typeof objA === typeof objB && objA.constructor === objB.constructor;
 }
 function getRandomNumber(min, max) {
   return Math.random() * (max - min) + min;

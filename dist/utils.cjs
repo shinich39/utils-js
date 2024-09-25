@@ -18,8 +18,8 @@ var __copyProps = (to, from, except, desc) => {
 var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 
 // index.js
-var util_js_exports = {};
-__export(util_js_exports, {
+var utils_js_exports = {};
+__export(utils_js_exports, {
   compareString: () => compareString,
   copyObject: () => copyObject,
   createArray: () => createArray,
@@ -70,7 +70,7 @@ __export(util_js_exports, {
   toHalfWidth: () => toHalfWidth,
   wait: () => wait
 });
-module.exports = __toCommonJS(util_js_exports);
+module.exports = __toCommonJS(utils_js_exports);
 var BASE64_CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 var TYPE_PRIORITY = [
   isUndefined,
@@ -175,7 +175,7 @@ function isUndefined(obj) {
   return obj === void 0;
 }
 function isSameType(objA, objB) {
-  return typeof objA === typeof objB && objA.constructor === objB.constructor;
+  return isNull(objA) && isNull(objB) || typeof objA === typeof objB && objA.constructor === objB.constructor;
 }
 function getRandomNumber(min, max) {
   return Math.random() * (max - min) + min;
