@@ -31,7 +31,7 @@ function isEmptyString(obj) {
   return isString(obj) && obj.replace(/^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g, "") === "";
 }
 function isObject(obj) {
-  return typeof obj === "object" && obj !== null && obj.constructor === Object && Object.getPrototypeOf(obj) === Object.prototype;
+  return typeof obj === "object" && obj !== null;
 }
 function isEmptyObject(obj) {
   return isObject(obj) && Object.keys(obj).length === 0;

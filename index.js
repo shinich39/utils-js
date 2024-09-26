@@ -66,12 +66,13 @@ function isEmptyString(obj) {
  * @returns {boolean}
  */
 function isObject(obj) {
-  return (
-    typeof obj === "object" &&
-    obj !== null &&
-    obj.constructor === Object &&
-    Object.getPrototypeOf(obj) === Object.prototype
-  );
+  return typeof obj === "object" && obj !== null;
+  // return (
+  //   typeof obj === "object" &&
+  //   obj !== null &&
+  //   obj.constructor === Object &&
+  //   Object.getPrototypeOf(obj) === Object.prototype
+  // );
 }
 /**
  *
