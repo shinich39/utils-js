@@ -1,6 +1,6 @@
 # utils-js
 
-Javascript utilities.
+Utilities for javascript development.
 
 ## Usage
 
@@ -21,7 +21,7 @@ Browser
 ```html
 <script src="./dist/utils.min.js"></script>
 <script>
-  const { isBoolean, } = window.utils; // esbuild.js > MODULE_NAME
+  const { isBoolean, } = window.utils;
 </script>
 ```
 

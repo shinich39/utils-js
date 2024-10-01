@@ -2,8 +2,6 @@ import * as utils from "../index.js";
 // import * as utils from "./util.mjs";
 // const utils = require("./dist/util.cjs");
 
-
-
 console.log("isBoolean", utils.isBoolean(true));
 console.log("isNumber", utils.isNumber(1));
 console.log("isNumeric", utils.isNumeric("1"));

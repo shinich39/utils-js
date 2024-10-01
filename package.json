@@ -1,7 +1,7 @@
 {
   "name": "utils-js",
   "version": "1.0.0",
-  "description": "Javascript utilities.",
+  "description": "Utilities for javascript development.",
   "main": "index.js",
   "type": "module",
   "scripts": {
