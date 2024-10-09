@@ -400,15 +400,45 @@ const res = utils.groupByKey(arr, key);
 
 - utils.queryObject(obj, qry)
 
+Please check [MongoDB Query](https://www.mongodb.com/docs/mongodb-shell/crud/read/) for more details.  
+
 ```js
 const obj = {
   name: "John",
 };
 
 const qry = {
-  name: {
-    $eq: "John",
-  },
+  $and: [{
+    name: "John",
+  }, {
+    name: {
+      $eq: "John",
+    }
+  }, {
+    name: {
+      $ne: "Bob",
+    }
+  }, {
+    name: {
+      $re: /^John$/
+    }
+  }, {
+    name: {
+      $exists: true,
+    },
+  }, {
+    name: {
+      $in: ["Bob", "John"],
+    },
+  }, {
+    name: {
+      $nin: ["Bob", "Mike"],
+    },
+  }, {
+    $not: {
+      name: "Bob"
+    }
+  }]
 };
 
 const res = utils.queryObject(obj, qry);

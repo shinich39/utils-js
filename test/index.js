@@ -110,9 +110,37 @@ console.log("groupByKey", utils.groupByKey([
 console.log("queryObject", utils.queryObject({
   name: "John",
 }, {
-  name: {
-    $eq: "John",
-  },
+  $and: [{
+    name: "John",
+  }, {
+    name: {
+      $eq: "John",
+    }
+  }, {
+    name: {
+      $ne: "Bob",
+    }
+  }, {
+    name: {
+      $re: /^John$/
+    }
+  }, {
+    name: {
+      $exists: true,
+    },
+  }, {
+    name: {
+      $in: ["Bob", "John"],
+    },
+  }, {
+    name: {
+      $nin: ["Bob", "Mike"],
+    },
+  }, {
+    $not: {
+      name: "Bob"
+    }
+  }]
 }));
 
 console.log("getContainedSize", utils.getContainedSize({ width: 5, height: 10 }, { width: 20, height: 20 }));
