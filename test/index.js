@@ -47,13 +47,18 @@ console.log("parseCommand", utils.parseCommand("git commit -m \"update 'many' fe
 
 console.log("parseQueryString", utils.parseQueryString("https://www.google.com/search?q=bing&page=10&page=39"));
 
-console.log("parseTemplate", utils.parseTemplate("${a} ${b.bb.bbb} sit amet.", {
+console.log("parseTemplate", utils.parseTemplate("${a} ${b.bb.bbb} ${c[cc]['ccc'][2]} amet.", {
   a: "Lorem ipsum",
   b: {
     bb: {
       bbb: "dolor",
     },
   },
+  c: {
+    cc: {
+      ccc: ["A", "B", "sit"],
+    }
+  } 
 }));
 
 console.log("getMinValue", utils.getMinValue([1, 2, 3, 4, 5, 6]));

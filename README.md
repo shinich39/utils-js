@@ -222,7 +222,7 @@ const res = utils.parseQueryString(str);
 - utils.parseTemplate(str, obj)
 
 ```js
-const str = "${a} ${b.bb.bbb} sit amet.";
+const str = "${a} ${b.bb.bbb} ${c[cc]['ccc'][2]} amet.";
 const obj = {
   a: "Lorem ipsum",
   b: {
@@ -230,6 +230,11 @@ const obj = {
       bbb: "dolor",
     },
   },
+  c: {
+    cc: {
+      ccc: ["A", "B", "sit"],
+    }
+  } 
 };
 const res = utils.parseTemplate(str, obj);
 // Lorem ipsum dolor sit amet.
