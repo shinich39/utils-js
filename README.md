@@ -250,6 +250,15 @@ const res = utils.compareString(a, b);
 // }
 ```
 
+- utils.compareObject(a, b)
+
+```js
+const a = "a2";
+const b = "a10";
+const res = utils.compareObject(a, b);
+// -1
+```
+
 - utils.parseCommand(str)
 
 ```js

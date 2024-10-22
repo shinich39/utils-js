@@ -758,7 +758,7 @@ function getModeValue(arr) {
  * 
  * @param {*} a 
  * @param {*} b 
- * @returns 
+ * @returns {number}
  */
 function compareObject(a, b) {
   const aIdx = TYPE_PRIORITY.findIndex(function (fn) {
@@ -1159,6 +1159,7 @@ export {
   toHalfWidth,
   toFullWidth,
   compareString,
+  compareObject,
   parseCommand,
   parseQueryString,
   parseTemplate,

@@ -20,6 +20,7 @@ var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: tru
 // index.js
 var utils_js_exports = {};
 __export(utils_js_exports, {
+  compareObject: () => compareObject,
   compareString: () => compareString,
   copyObject: () => copyObject,
   createArray: () => createArray,
@@ -795,6 +796,7 @@ function promiseAll(funcs) {
 }
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
+  compareObject,
   compareString,
   copyObject,
   createArray,

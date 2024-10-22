@@ -21,6 +21,7 @@ var utils = (() => {
   // index.js
   var utils_js_exports = {};
   __export(utils_js_exports, {
+    compareObject: () => compareObject,
     compareString: () => compareString,
     copyObject: () => copyObject,
     createArray: () => createArray,

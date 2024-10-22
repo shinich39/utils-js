@@ -717,6 +717,7 @@ function promiseAll(funcs) {
   }, Promise.resolve([]));
 }
 export {
+  compareObject,
   compareString,
   copyObject,
   createArray,

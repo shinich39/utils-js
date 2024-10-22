@@ -48,6 +48,7 @@ console.log("toFullWidth", utils.toFullWidth("Lorem ipsum dolor sit amet."));
 console.log("toHalfWidth", utils.toHalfWidth("Ｌｏｒｅｍ　ｉｐｓｕｍ　ｄｏｌｏｒ　ｓｉｔ　ａｍｅｔ．"));
 
 console.log("compareString", utils.compareString("Lorem ipsum dolor sit amet.", "Lorem ipsum foobar sit aget."));
+console.log("compareObject", utils.compareObject("a2", "a10"));
 
 console.log("parseCommand", utils.parseCommand("git commit -m \"update 'many' features\" -f true"));
 
