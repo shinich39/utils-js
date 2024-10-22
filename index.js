@@ -282,6 +282,63 @@ function splitFloat(str) {
   return str.split(/([0-9]+\.[0-9]+)+/);
 }
 /**
+ * 
+ * @param {string} path 
+ * @returns {string}
+ */
+function getExtension(path) {
+  return /\.[^\\\/]/.test(path) ? 
+    "." + path.split(".").pop() : 
+    "";
+}
+/**
+ * 
+ * @param {string} path 
+ * @param {string|null} ext e.g. ".jpg", ".png",".txt" ...
+ * @returns {string}
+ */
+function getFilename(path, ext) {
+  if (typeof ext === "string") {
+    path = path.replace(new RegExp(ext+"$"), "");
+  }
+  return path.replace(/[\\\/]$/, "").split(/[\\\/]/).pop();
+}
+/**
+ * 
+ * @param {string} path 
+ * @returns {string}
+ */
+function getDirectoryPath(path) {
+  return path
+    .replace(/[^\\\/]+?[\\\/]?$/, "")
+    .replace(/(.)[\\\/]$/, "$1") || ".";
+}
+/**
+ * 
+ * @param {string} from 
+ * @param {string} to 
+ * @returns {string}
+ */
+function getRelativePath(from, to) {
+  from = from.replace(/[\\\/]/g, "/").replace(/^\.?\//, "");
+  to = to.replace(/[\\\/]/g, "/").replace(/^\.?\//, "");
+
+  if (!from.endsWith("/")) {
+    from += "/";
+  }
+  if (!to.endsWith("/")) {
+    to += "/";
+  }
+
+  let result = "";
+  while (!to.startsWith(from)) {
+    result += "../";
+    from = from.substring(0, from.lastIndexOf("/", from.length - 2) + 1);
+  }
+  result += to.substring(from.length, to.length);
+  return result.replace(/[\\\/]$/, "");
+}
+/**
  *
  * @param {string} str
  * @returns {string}
@@ -390,10 +447,10 @@ function compareString(strA, strB) {
   return P(M(C(strA, strB), strA, strB), strA, strB);
 }
 /**
- * Generate unique id.
+ * Generate object id
  * @returns {string}
  */
-function getObjectId() {
+function generateObjectId() {
   return (
     Math.floor(new Date().getTime() / 1000).toString(16) +
     "xxxxxx".replace(/x/g, function (v) {
@@ -401,6 +458,16 @@ function getObjectId() {
     }) +
     (__uniq__++).toString(16).padStart(6, "0")
   );
+}
+/**
+ * Generate uuid v4
+ * @returns {string}
+ */
+function generateUUID() {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    let r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+    return v.toString(16);
+  });
 }
 /**
  * Encrypt string with xor cipher
@@ -1079,12 +1146,17 @@ export {
   getRandomNumber,
   getBezierPoint,
   setAnimation,
-  getObjectId,
+  generateObjectId,
+  generateUUID,
   encryptString,
   toBase64,
   fromBase64,
   splitInt,
   splitFloat,
+  getExtension,
+  getFilename,
+  getDirectoryPath,
+  getRelativePath,
   toHalfWidth,
   toFullWidth,
   compareString,

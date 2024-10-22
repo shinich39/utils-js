@@ -88,11 +88,18 @@ const res = utils.setAnimation(data, function([x, y], now, timer) {
 }, time, tick);
 ```
 
-- utils.getObjectId()
+- utils.generateObjectId()
 
 ```js
-const res = utils.getObjectId();
+const res = utils.generateObjectId();
 // 66334bcae2c321000000
+```
+
+- utils.generateUUID()
+
+```js
+const res = utils.generateUUID();
+// 93cbe72f-a5aa-4b31-acee-409a17c1849f
 ```
 
 - utils.encryptString(str, salt)
@@ -138,6 +145,50 @@ const res = utils.splitInt(str);
 const str = "Oregano Leaves, 0.5 tsp";
 const res = utils.splitFloat(str);
 // [ 'Oregano Leaves, ', '0.5', ' tsp' ]
+```
+
+- utils.getExtension(path)
+
+```js
+const str = "EPUB/styles/default.css";
+const res = utils.getExtension(str);
+// .css
+```
+
+- utils.getFilename(path, ext)
+
+```js
+const str = "EPUB/styles/default.css";
+const res = utils.getFilename(str);
+// default.css
+
+const res = utils.getFilename(str, utils.getExtension(str));
+// default
+```
+
+- utils.getDirectoryPath(path)
+
+```js
+const str = "EPUB/styles/default.css";
+const res = utils.getDirectoryPath(str);
+// EPUB/styles
+```
+
+- utils.getDirectoryPath(path)
+
+```js
+const str = "EPUB/styles/default.css";
+const res = utils.getDirectoryPath(str);
+// EPUB/styles
+```
+
+- utils.getRelativePath(from, to)
+
+```js
+const from = "META-INF/container.xml";
+const to = "EPUB/styles/default.css";
+const res = utils.getRelativePath(from, to);
+// ../../EPUB/styles/default.css
 ```
 
 - utils.toFullWidth(str)

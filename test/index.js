@@ -28,7 +28,8 @@ utils.setAnimation([[0, 0], [0.25, 1], [0.5, 1], [1, 1]], function([x, y], now, 
   console.log(`setAnimation ${now}: ${x} ${y}`);
 }, 1, 1);
 
-console.log("getObjectId", utils.getObjectId());
+console.log("generateObjectId", utils.generateObjectId());
+console.log("generateUUID", utils.generateUUID());
 console.log("encryptString", utils.encryptString("Lorem ipsum dolor sit amet.", "3939"));
 
 console.log("toBase64", utils.toBase64("Lorem ipsum dolor sit amet.", "image/jpeg"));
@@ -37,6 +38,11 @@ console.log("fromBase64", utils.fromBase64("TG9yZW0gaXBzdW0gZG9sb3Igc2l0IGFtZXQu
 console.log("splitInt", utils.splitInt("Oregano Leaves, 0.5 tsp"));
 console.log("splitFloat", utils.splitFloat("Oregano Leaves, 0.5 tsp"));
 
+console.log("getExtension", utils.getExtension("EPUB/styles/default.css"));
+console.log("getFilename", utils.getFilename("EPUB/styles/default.css"));
+console.log("getFilename", utils.getFilename("EPUB/styles/default.css", utils.getExtension("EPUB/styles/default.css")));
+console.log("getDirectoryPath", utils.getDirectoryPath("EPUB/styles/default.css"));
+console.log("getRelativePath", utils.getRelativePath("META-INF/container.xml", "EPUB/styles/default.css"));
 
 console.log("toFullWidth", utils.toFullWidth("Lorem ipsum dolor sit amet."));
 console.log("toHalfWidth", utils.toHalfWidth("Ｌｏｒｅｍ　ｉｐｓｕｍ　ｄｏｌｏｒ　ｓｉｔ　ａｍｅｔ．"));
