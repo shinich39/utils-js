@@ -458,8 +458,7 @@ function compareObject(a, b) {
     return a - b;
   } else if (aIdx === 4) {
     return a.localeCompare(b, void 0, {
-      numeric: true,
-      sensitivity: "base"
+      numeric: true
     });
   } else if (aIdx === 5) {
     return Object.keys(a).length - Object.keys(b).length;
