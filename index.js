@@ -784,7 +784,6 @@ function compareObject(a, b) {
     // string
     return a.localeCompare(b, undefined, {
       numeric: true,
-      sensitivity: "base",
     });
   } else if (aIdx === 5) {
     // object
