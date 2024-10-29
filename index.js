@@ -320,22 +320,16 @@ function getDirectoryPath(path) {
  * @returns {string}
  */
 function getRelativePath(from, to) {
-  from = from.replace(/[\\\/]/g, "/").replace(/^\.?\//, "");
-  to = to.replace(/[\\\/]/g, "/").replace(/^\.?\//, "");
-
-  if (!from.endsWith("/")) {
-    from += "/";
-  }
-  if (!to.endsWith("/")) {
-    to += "/";
-  }
-
   let result = "";
+  
+  from = (from + "/").replace(/[\\\/]+/g, "/").replace(/^\.?\//, "");
+  to = (to + "/").replace(/[\\\/]/g, "/").replace(/^\.?\//, "");
   while (!to.startsWith(from)) {
     result += "../";
     from = from.substring(0, from.lastIndexOf("/", from.length - 2) + 1);
   }
   result += to.substring(from.length, to.length);
+
   return result.replace(/[\\\/]$/, "");
 }
 /**
