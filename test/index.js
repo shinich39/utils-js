@@ -152,7 +152,7 @@ console.log("queryObject", utils.queryObject({
     $not: {
       name: "Bob"
     }
-  }]
+  }],
 }));
 
 console.log("getContainedSize", utils.getContainedSize({ width: 5, height: 10 }, { width: 20, height: 20 }));
