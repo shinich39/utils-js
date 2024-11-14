@@ -43,6 +43,7 @@ console.log("getFilename", utils.getFilename("EPUB/styles/default.css"));
 console.log("getFilename", utils.getFilename("EPUB/styles/default.css", utils.getExtension("EPUB/styles/default.css")));
 console.log("getDirectoryPath", utils.getDirectoryPath("EPUB/styles/default.css"));
 console.log("getRelativePath", utils.getRelativePath("META-INF/container.xml", "EPUB/styles/default.css"));
+console.log("getRelativePath", utils.getRelativePath("META-INF/container.xml", "META-INF/container.xml"));
 
 console.log("toFullWidth", utils.toFullWidth("Lorem ipsum dolor sit amet."));
 console.log("toHalfWidth", utils.toHalfWidth("Ｌｏｒｅｍ　ｉｐｓｕｍ　ｄｏｌｏｒ　ｓｉｔ　ａｍｅｔ．"));
