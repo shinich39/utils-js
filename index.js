@@ -327,6 +327,9 @@ function getRelativePath(from, to) {
   to = (to + "/").replace(/[\\\/]/g, "/").replace(/^\.?\//, "");
   
   let result = "";
+  if (from === to) {
+    return result;
+  }
   while (!to.startsWith(from)) {
     result += "../";
     from = from.substring(0, from.lastIndexOf("/", from.length - 2) + 1);
