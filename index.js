@@ -1,16 +1,5 @@
 "use strict";
 
-const BASE64_CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
-const TYPE_PRIORITY = [
-  isUndefined,
-  isNull,
-  isBoolean,
-  isNumber,
-  isString,
-  isObject,
-  isArray,
-  isFunction,
-];
 let __uniq__ = 0;
 
 /**
@@ -238,7 +227,7 @@ function getBezierPoint(data, time) {
 /**
  * 
  * @param {array} data [[x, y], ...]
- * @param {function} cb function([x, y], ms, timoutId|null)
+ * @param {function} cb function([x, y], ms, timeoutId|null)
  * @param {number} time default 1000
  * @param {number} tick default 10
  */
@@ -288,7 +277,7 @@ function splitFloat(str) {
  * @returns {string}
  */
 function getExtension(path) {
-  if (/\.[^\\\/]/.test(path)) {
+  if (/\.[^\\\/.]+?$/.test(path)) {
     return "." + path.split(".").pop();
   } else {
     return "";
@@ -313,8 +302,8 @@ function getFilename(path, ext) {
  */
 function getDirectoryPath(path) {
   return path
-    .replace(/[^\\\/]+?[\\\/]?$/, "")
-    .replace(/(.)[\\\/]$/, "$1") || ".";
+    .replace(/[^\\\/]+[\\\/]?$/, "")
+    .replace(/[\\\/]+$/, "") || ".";
 }
 /**
  * 
@@ -324,7 +313,7 @@ function getDirectoryPath(path) {
  */
 function getRelativePath(from, to) {
   from = (from + "/").replace(/[\\\/]+/g, "/").replace(/^\.?\//, "");
-  to = (to + "/").replace(/[\\\/]/g, "/").replace(/^\.?\//, "");
+  to = (to + "/").replace(/[\\\/]+/g, "/").replace(/^\.?\//, "");
   
   let result = "";
   while (!to.startsWith(from)) {
@@ -500,6 +489,8 @@ function encryptString(str, salt) {
  * @returns {string} base64
  */
 function toBase64(str, type) {
+  const charset = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+
   str = String(str);
   if (/[^\0-\xFF]/.test(str)) {
     // Note: no need to special-case astral symbols here, as surrogates are
@@ -527,10 +518,10 @@ function toBase64(str, type) {
     // Turn the 24 bits into four chunks of 6 bits each, and append the
     // matching character for each of them to the output.
     output +=
-      BASE64_CHARACTERS.charAt((buffer >> 18) & 0x3f) +
-      BASE64_CHARACTERS.charAt((buffer >> 12) & 0x3f) +
-      BASE64_CHARACTERS.charAt((buffer >> 6) & 0x3f) +
-      BASE64_CHARACTERS.charAt(buffer & 0x3f);
+      charset.charAt((buffer >> 18) & 0x3f) +
+      charset.charAt((buffer >> 12) & 0x3f) +
+      charset.charAt((buffer >> 6) & 0x3f) +
+      charset.charAt(buffer & 0x3f);
   }
 
   if (padding == 2) {
@@ -538,15 +529,15 @@ function toBase64(str, type) {
     b = str.charCodeAt(++position);
     buffer = a + b;
     output +=
-      BASE64_CHARACTERS.charAt(buffer >> 10) +
-      BASE64_CHARACTERS.charAt((buffer >> 4) & 0x3f) +
-      BASE64_CHARACTERS.charAt((buffer << 2) & 0x3f) +
+      charset.charAt(buffer >> 10) +
+      charset.charAt((buffer >> 4) & 0x3f) +
+      charset.charAt((buffer << 2) & 0x3f) +
       "=";
   } else if (padding == 1) {
     buffer = str.charCodeAt(position);
     output +=
-      BASE64_CHARACTERS.charAt(buffer >> 2) +
-      BASE64_CHARACTERS.charAt((buffer << 4) & 0x3f) +
+      charset.charAt(buffer >> 2) +
+      charset.charAt((buffer << 4) & 0x3f) +
       "==";
   }
 
@@ -562,6 +553,8 @@ function toBase64(str, type) {
  * @returns {string}
  */
 function fromBase64(str) {
+  const charset = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+
   str = String(str)
     .replace(/^data:([A-Za-z-+\/]+);[A-Za-z0-9]+,/, "")
     .replace(/[\t\n\f\r ]/g, "");
@@ -582,7 +575,7 @@ function fromBase64(str) {
       output = "",
       position = -1;
   while (++position < length) {
-    buffer = BASE64_CHARACTERS.indexOf(str.charAt(position));
+    buffer = charset.indexOf(str.charAt(position));
     bitStorage;
     if (bitCounter % 4) {
       bitStorage = bitStorage * 64 + buffer;
@@ -785,11 +778,22 @@ function getModeValue(arr) {
  * @returns {number}
  */
 function compareObject(a, b) {
-  const aIdx = TYPE_PRIORITY.findIndex(function (fn) {
+  const priority = [
+    isUndefined,
+    isNull,
+    isBoolean,
+    isNumber,
+    isString,
+    isObject,
+    isArray,
+    isFunction,
+  ];
+  
+  const aIdx = priority.findIndex(function (fn) {
     return fn(a);
   });
 
-  const bIdx = TYPE_PRIORITY.findIndex(function (fn) {
+  const bIdx = priority.findIndex(function (fn) {
     return fn(b);
   });
 

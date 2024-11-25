@@ -1,4 +1,5 @@
 import * as utils from "../index.js";
+import path from "node:path";
 // import * as utils from "./util.mjs";
 // const utils = require("./dist/util.cjs");
 
@@ -39,9 +40,15 @@ console.log("splitInt", utils.splitInt("Oregano Leaves, 0.5 tsp"));
 console.log("splitFloat", utils.splitFloat("Oregano Leaves, 0.5 tsp"));
 
 console.log("getExtension", utils.getExtension("EPUB/styles/default.css"));
+console.log("getExtension", utils.getExtension("EPUB/styles/default.tar.gz"));
 console.log("getFilename", utils.getFilename("EPUB/styles/default.css"));
 console.log("getFilename", utils.getFilename("EPUB/styles/default.css", utils.getExtension("EPUB/styles/default.css")));
-console.log("getDirectoryPath", utils.getDirectoryPath("EPUB/styles/default.css"));
+console.log("getDirectoryPath", utils.getDirectoryPath("EPUB/styles/default.css"), path.dirname("EPUB/styles/default.css"));
+console.log("getDirectoryPath", utils.getDirectoryPath("EPUB/styles/"), path.dirname("EPUB/styles/"));
+console.log("getDirectoryPath", utils.getDirectoryPath("EPUB/styles"), path.dirname("EPUB/styles"));
+console.log("getDirectoryPath", utils.getDirectoryPath("./"), path.dirname("./"));
+console.log("getDirectoryPath", utils.getDirectoryPath("."), path.dirname("."));
+console.log("getDirectoryPath", utils.getDirectoryPath(""), path.dirname(""));
 console.log("getRelativePath", utils.getRelativePath("META-INF/container.xml", "EPUB/styles/default.css"));
 console.log("getRelativePath", utils.getRelativePath("META-INF/container.xml", "META-INF/container.xml"));
 
