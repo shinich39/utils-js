@@ -39,16 +39,16 @@ console.log("fromBase64", utils.fromBase64("TG9yZW0gaXBzdW0gZG9sb3Igc2l0IGFtZXQu
 console.log("splitInt", utils.splitInt("Oregano Leaves, 0.5 tsp"));
 console.log("splitFloat", utils.splitFloat("Oregano Leaves, 0.5 tsp"));
 
-console.log("getExtension", utils.getExtension("EPUB/styles/default.css"));
-console.log("getExtension", utils.getExtension("EPUB/styles/default.tar.gz"));
-console.log("getFilename", utils.getFilename("EPUB/styles/default.css"));
-console.log("getFilename", utils.getFilename("EPUB/styles/default.css", utils.getExtension("EPUB/styles/default.css")));
-console.log("getDirectoryPath", utils.getDirectoryPath("EPUB/styles/default.css"), path.dirname("EPUB/styles/default.css"));
-console.log("getDirectoryPath", utils.getDirectoryPath("EPUB/styles/"), path.dirname("EPUB/styles/"));
-console.log("getDirectoryPath", utils.getDirectoryPath("EPUB/styles"), path.dirname("EPUB/styles"));
-console.log("getDirectoryPath", utils.getDirectoryPath("./"), path.dirname("./"));
-console.log("getDirectoryPath", utils.getDirectoryPath("."), path.dirname("."));
-console.log("getDirectoryPath", utils.getDirectoryPath(""), path.dirname(""));
+// console.log("getExtension", utils.getExtension("EPUB/styles/default.css"));
+// console.log("getExtension", utils.getExtension("EPUB/styles/default.tar.gz"));
+// console.log("getFilename", utils.getFilename("EPUB/styles/default.css"));
+// console.log("getFilename", utils.getFilename("EPUB/styles/default.css", utils.getExtension("EPUB/styles/default.css")));
+// console.log("getDirectoryPath", utils.getDirectoryPath("EPUB/styles/default.css"), path.dirname("EPUB/styles/default.css"));
+// console.log("getDirectoryPath", utils.getDirectoryPath("EPUB/styles/"), path.dirname("EPUB/styles/"));
+// console.log("getDirectoryPath", utils.getDirectoryPath("EPUB/styles"), path.dirname("EPUB/styles"));
+// console.log("getDirectoryPath", utils.getDirectoryPath("./"), path.dirname("./"));
+// console.log("getDirectoryPath", utils.getDirectoryPath("."), path.dirname("."));
+// console.log("getDirectoryPath", utils.getDirectoryPath(""), path.dirname(""));
 console.log("getRelativePath", utils.getRelativePath("META-INF/container.xml", "EPUB/styles/default.css"));
 console.log("getRelativePath", utils.getRelativePath("META-INF/container.xml", "META-INF/container.xml"));
 
@@ -75,6 +75,15 @@ console.log("parseTemplate", utils.parseTemplate("${a} ${b.bb.bbb} ${c[cc]['ccc'
     }
   } 
 }));
+
+const p39 = "EPUB/styles/default.css";
+console.log("parsePath", utils.parsePath(p39));
+console.log("node:path", {
+  filename: path.basename(p39, path.extname(p39)),
+  basename: path.basename(p39),
+  extname: path.extname(p39),
+  dirname: path.dirname(p39),
+});
 
 console.log("getMinValue", utils.getMinValue([1, 2, 3, 4, 5, 6]));
 console.log("getMaxValue", utils.getMaxValue([1, 2, 3, 4, 5, 6]));

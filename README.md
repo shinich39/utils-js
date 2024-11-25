@@ -300,6 +300,20 @@ const res = utils.parseTemplate(str, obj);
 // Lorem ipsum dolor sit amet.
 ```
 
+- utils.parsePath(str)
+
+```js
+const str = "EPUB/styles/default.css";
+const res = utils.parsePath(str);
+// {
+//   dirs: [ 'EPUB', 'styles' ],
+//   filename: 'default',
+//   basename: 'default.css',
+//   dirname: 'EPUB/styles',
+//   extname: '.css'
+// }
+```
+
 - utils.getMinValue(arr)
 
 ```js

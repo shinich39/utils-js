@@ -387,6 +387,27 @@ function parseTemplate(str, obj) {
     }
   });
 }
+function parsePath(str) {
+  str = str.replace(/[\\\/]+/g, "/").replace(/\/$/, "").replace(/^\.?\//, "");
+  let dirs = str.split("/"), filename = "", basename = "", dirname = ".", extname = "";
+  if (dirs.length > 0) {
+    basename = dirs.pop();
+    if (/\.[^\\\/.]+?$/.test(basename)) {
+      extname = "." + basename.split(".").pop();
+    }
+    filename = basename.replace(new RegExp(extname + "$"), "");
+  }
+  if (dirs.length > 0) {
+    dirname = dirs.join("/");
+  }
+  return {
+    dirs,
+    filename,
+    basename,
+    dirname,
+    extname
+  };
+}
 function createArray(len, value) {
   let arr = new Array(len);
   if (isFunction(value)) {
@@ -796,6 +817,7 @@ export {
   isString,
   isStringArray,
   parseCommand,
+  parsePath,
   parseQueryString,
   parseTemplate,
   promiseAll,

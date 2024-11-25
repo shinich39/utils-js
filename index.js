@@ -684,7 +684,45 @@ function parseTemplate(str, obj) {
   });
 }
 /**
- * Fill array to deepcopied value.
+ * 
+ * @param {string} str 
+ * @returns {object}
+ */
+function parsePath(str) {
+  // Normalize
+  str = str
+    .replace(/[\\\/]+/g, "/")
+    .replace(/\/$/, "")
+    .replace(/^\.?\//, "");
+
+  let dirs = str.split("/"),
+      filename = "",
+      basename = "",
+      dirname = ".",
+      extname = "";
+
+  if (dirs.length > 0) {
+    basename = dirs.pop();
+    if (/\.[^\\\/.]+?$/.test(basename)) {
+      extname = "." + basename.split(".").pop();
+    }
+    filename = basename.replace(new RegExp(extname+"$"), "");
+  }
+
+  if (dirs.length > 0) {
+    dirname = dirs.join("/");
+  }
+
+  return {
+    dirs,
+    filename,
+    basename,
+    dirname,
+    extname,
+  }
+}
+/**
+ * Fill array to deepcopied values.
  * @param {number} len
  * @param {*} value
  * @returns {array}
@@ -1217,6 +1255,7 @@ export {
   parseCommand,
   parseQueryString,
   parseTemplate,
+  parsePath,
   getMinValue,
   getMaxValue,
   getMeanValue,
