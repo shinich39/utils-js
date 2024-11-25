@@ -361,15 +361,13 @@ function parseCommand(str) {
   return result;
 }
 function parseQueryString(str) {
-  if (str.indexOf("?") > -1) {
-    str = str.split("?").pop();
-  }
-  let result = {};
-  for (const [key, value] of new URLSearchParams(str).entries()) {
-    if (!result[key]) {
-      result[key] = [value];
+  let parts = str.split("?").pop().split("&"), result = {};
+  for (const part of parts) {
+    const kv = part.split("=").map(decodeURIComponent);
+    if (!result[kv[0]]) {
+      result[kv[0]] = [decodeURIComponent(kv[1])];
     } else {
-      result[key].push(value);
+      result[kv[0]].push(decodeURIComponent(kv[1]));
     }
   }
   return result;
