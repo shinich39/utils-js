@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "test": "node ./test/index.js",
-    "pretty": "prettier . --write --config .prettierrc.js",
+    "pretty": "prettier index.js --write --config .prettierrc.js",
     "build": "node .esbuild.js"
   },
   "keywords": [

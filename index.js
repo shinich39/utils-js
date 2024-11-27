@@ -194,8 +194,10 @@ function isUndefined(obj) {
  * @returns {boolean}
  */
 function isSameType(objA, objB) {
-  return (isNull(objA) && isNull(objB)) || 
-    (typeof objA === typeof objB && objA.constructor === objB.constructor);
+  return (
+    (isNull(objA) && isNull(objB)) ||
+    (typeof objA === typeof objB && objA.constructor === objB.constructor)
+  );
 }
 /**
  *
@@ -207,7 +209,7 @@ function getRandomNumber(min, max) {
   return Math.random() * (max - min) + min;
 }
 /**
- * 
+ *
  * @param {array} data [[x, y], ...]
  * @param {number} time value between 0 and 1
  * @returns {[x, y]}
@@ -223,37 +225,6 @@ function getBezierPoint(data, time) {
     d.push([x, y]);
   }
   return getBezierPoint(d, time);
-}
-/**
- * 
- * @param {array} data [[x, y], ...]
- * @param {function} cb function([x, y], ms, timeoutId|null)
- * @param {number} time default 1000
- * @param {number} tick default 10
- */
-function setAnimation(data, cb, time, tick) {
-  if (!time) {
-    time = 1000;
-  }
-  if (!tick) {
-    tick = 10;
-  }
-  let now = 0,
-      d = getBezierPoint(data, now / time, now);
-
-  cb(d, now, anim());
-
-  function anim() {
-    now += tick;
-    d = getBezierPoint(data, now / time);
-    return setTimeout(function() {
-      if (now < time) {
-        cb(d, now, anim());
-      } else {
-        cb(d, now, null);
-      }
-    }, tick);
-  }
 }
 /**
  *
@@ -272,8 +243,8 @@ function splitFloat(str) {
   return str.split(/([0-9]+\.[0-9]+)+/);
 }
 /**
- * 
- * @param {string} path 
+ *
+ * @param {string} path
  * @returns {string}
  */
 function getExtension(path) {
@@ -284,37 +255,38 @@ function getExtension(path) {
   }
 }
 /**
- * 
- * @param {string} path 
+ *
+ * @param {string} path
  * @param {string|null} ext e.g. ".jpg", ".png",".txt" ...
  * @returns {string}
  */
 function getFilename(path, ext) {
   if (typeof ext === "string") {
-    path = path.replace(new RegExp(ext+"$"), "");
+    path = path.replace(new RegExp(ext + "$"), "");
   }
-  return path.replace(/[\\\/]$/, "").split(/[\\\/]/).pop();
+  return path
+    .replace(/[\\\/]$/, "")
+    .split(/[\\\/]/)
+    .pop();
 }
 /**
- * 
- * @param {string} path 
+ *
+ * @param {string} path
  * @returns {string}
  */
 function getDirectoryPath(path) {
-  return path
-    .replace(/[^\\\/]+[\\\/]?$/, "")
-    .replace(/[\\\/]+$/, "") || ".";
+  return path.replace(/[^\\\/]+[\\\/]?$/, "").replace(/[\\\/]+$/, "") || ".";
 }
 /**
- * 
- * @param {string} from 
- * @param {string} to 
+ *
+ * @param {string} from
+ * @param {string} to
  * @returns {string}
  */
 function getRelativePath(from, to) {
   from = (from + "/").replace(/[\\\/]+/g, "/").replace(/^\.?\//, "");
   to = (to + "/").replace(/[\\\/]+/g, "/").replace(/^\.?\//, "");
-  
+
   let result = "";
   while (!to.startsWith(from)) {
     result += "../";
@@ -389,12 +361,12 @@ function compareString(strA, strB) {
   // Write diffs
   function P(dp, a, b) {
     let MATCH = 0,
-        INSERT = 1,
-        DELETE = -1,
-        res = [],
-        matches = 0,
-        i = a.length,
-        j = b.length;
+      INSERT = 1,
+      DELETE = -1,
+      res = [],
+      matches = 0,
+      i = a.length,
+      j = b.length;
     while (i > 0 || j > 0) {
       const prev = res[res.length - 1];
       const itemA = a[i - 1];
@@ -450,13 +422,13 @@ function generateObjectId() {
  * @returns {string}
  */
 function generateUUID() {
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-    let r = Math.random() * 16 | 0,
-        v;
-    if (c == 'x') {
+  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (c) {
+    let r = (Math.random() * 16) | 0,
+      v;
+    if (c == "x") {
       v = r;
     } else {
-      v = (r & 0x3 | 0x8);
+      v = (r & 0x3) | 0x8;
     }
     return v.toString(16);
   });
@@ -489,23 +461,24 @@ function encryptString(str, salt) {
  * @returns {string} base64
  */
 function toBase64(str, type) {
-  const charset = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+  const charset =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
   str = String(str);
   if (/[^\0-\xFF]/.test(str)) {
     // Note: no need to special-case astral symbols here, as surrogates are
     // matched, and the input is supposed to only contain ASCII anyway.
     throw new Error(
-      "The string to be encoded contains characters outside of the Latin1 range.",
+      "The string to be encoded contains characters outside of the Latin1 range."
     );
   }
   let padding = str.length % 3,
-      output = "",
-      position = -1,
-      a,
-      b,
-      c,
-      buffer;
+    output = "",
+    position = -1,
+    a,
+    b,
+    c,
+    buffer;
   // Make sure any padding is handled outside of the loop.
   let length = str.length - padding;
 
@@ -536,13 +509,11 @@ function toBase64(str, type) {
   } else if (padding == 1) {
     buffer = str.charCodeAt(position);
     output +=
-      charset.charAt(buffer >> 2) +
-      charset.charAt((buffer << 4) & 0x3f) +
-      "==";
+      charset.charAt(buffer >> 2) + charset.charAt((buffer << 4) & 0x3f) + "==";
   }
 
   if (type) {
-    return "data:"+type+";base64," + output;
+    return "data:" + type + ";base64," + output;
   } else {
     return output;
   }
@@ -553,7 +524,8 @@ function toBase64(str, type) {
  * @returns {string}
  */
 function fromBase64(str) {
-  const charset = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+  const charset =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
   str = String(str)
     .replace(/^data:([A-Za-z-+\/]+);[A-Za-z0-9]+,/, "")
@@ -566,14 +538,14 @@ function fromBase64(str) {
   // http://whatwg.org/C#alphanumeric-ascii-characters
   if (length % 4 == 1 || /[^+a-zA-Z0-9/]/.test(str)) {
     throw new Error(
-      "Invalid character: the string to be decoded is not correctly encoded.",
+      "Invalid character: the string to be decoded is not correctly encoded."
     );
   }
   let bitCounter = 0,
-      bitStorage,
-      buffer,
-      output = "",
-      position = -1;
+    bitStorage,
+    buffer,
+    output = "",
+    position = -1;
   while (++position < length) {
     buffer = charset.indexOf(str.charAt(position));
     bitStorage;
@@ -586,7 +558,7 @@ function fromBase64(str) {
     if (bitCounter++ % 4) {
       // …convert the first 8 bits to a single ASCII character.
       output += String.fromCharCode(
-        0xff & (bitStorage >> ((-2 * bitCounter) & 6)),
+        0xff & (bitStorage >> ((-2 * bitCounter) & 6))
       );
     }
   }
@@ -602,10 +574,10 @@ function fromBase64(str) {
  */
 function parseCommand(str) {
   let result = [],
-      i = 0,
-      tmp = str.replace(/\\'|\\"/g, "00"),
-      bracket = null,
-      part = "";
+    i = 0,
+    tmp = str.replace(/\\'|\\"/g, "00"),
+    bracket = null,
+    part = "";
   while (i < str.length) {
     if (!bracket) {
       if (tmp[i] === "'" || tmp[i] === '"') {
@@ -641,7 +613,7 @@ function parseCommand(str) {
  */
 function parseQueryString(str) {
   let parts = str.split("?").pop().split("&"),
-      result = {};
+    result = {};
   for (const part of parts) {
     const kv = part.split("=").map(decodeURIComponent);
     if (!result[kv[0]]) {
@@ -653,7 +625,7 @@ function parseQueryString(str) {
   return result;
 }
 /**
- * Parse $ + key in string.  
+ * Parse $ + key in string.
  * Dot notation supported.
  * @param {string} str
  * @param {object} obj
@@ -666,11 +638,12 @@ function parseQueryString(str) {
 function parseTemplate(str, obj) {
   return str.replace(/\$\{[^}]*?\}/g, function (item) {
     let target = obj,
-        keys = item.substring(2, item.length - 1)
-                    .split(/\.|\[['"]?|['"]?\]/)
-                    .filter(Boolean),  
-        key = keys.pop();
-    while(isObject(target) && keys.length > 0) {
+      keys = item
+        .substring(2, item.length - 1)
+        .split(/\.|\[['"]?|['"]?\]/)
+        .filter(Boolean),
+      key = keys.pop();
+    while (isObject(target) && keys.length > 0) {
       target = target[keys.shift()];
     }
 
@@ -682,8 +655,8 @@ function parseTemplate(str, obj) {
   });
 }
 /**
- * 
- * @param {string} str 
+ *
+ * @param {string} str
  * @returns {object}
  */
 function parsePath(str) {
@@ -694,17 +667,17 @@ function parsePath(str) {
     .replace(/^\.?\//, "");
 
   let dirs = str.split("/"),
-      filename = "",
-      basename = "",
-      dirname = ".",
-      extname = "";
+    filename = "",
+    basename = "",
+    dirname = ".",
+    extname = "";
 
   if (dirs.length > 0) {
     basename = dirs.pop();
     if (/\.[^\\\/.]+?$/.test(basename)) {
       extname = "." + basename.split(".").pop();
     }
-    filename = basename.replace(new RegExp(extname+"$"), "");
+    filename = basename.replace(new RegExp(extname + "$"), "");
   }
 
   if (dirs.length > 0) {
@@ -717,7 +690,7 @@ function parsePath(str) {
     basename,
     dirname,
     extname,
-  }
+  };
 }
 /**
  * Fill array to deepcopied values.
@@ -780,9 +753,11 @@ function getMaxValue(arr) {
  * @returns {number}
  */
 function getMeanValue(arr) {
-  return arr.reduce(function (prev, curr) {
-    return prev + curr;
-  }, 0) / arr.length;
+  return (
+    arr.reduce(function (prev, curr) {
+      return prev + curr;
+    }, 0) / arr.length
+  );
 }
 /**
  * Get most frequent value in array.
@@ -791,8 +766,8 @@ function getMeanValue(arr) {
  */
 function getModeValue(arr) {
   let seen = {},
-      maxValue = arr[0],
-      maxCount = 1;
+    maxValue = arr[0],
+    maxCount = 1;
   for (let i = 0; i < arr.length; i++) {
     const value = arr[i];
     if (!seen[value]) {
@@ -808,9 +783,9 @@ function getModeValue(arr) {
   return maxValue;
 }
 /**
- * 
- * @param {*} a 
- * @param {*} b 
+ *
+ * @param {*} a
+ * @param {*} b
  * @returns {number}
  */
 function compareObject(a, b) {
@@ -824,7 +799,7 @@ function compareObject(a, b) {
     isArray,
     isFunction,
   ];
-  
+
   const aIdx = priority.findIndex(function (fn) {
     return fn(a);
   });
@@ -867,8 +842,8 @@ function compareObject(a, b) {
   }
 }
 /**
- * Sort array ascending order.  
- * Order of types:  
+ * Sort array ascending order.
+ * Order of types:
  * [undefined, null, boolean, number, string, object, array, function]
  * @param {array} arr
  * @param {boolean|undefined} desc descending
@@ -876,7 +851,7 @@ function compareObject(a, b) {
  */
 function sortArray(arr, desc) {
   desc = Boolean(desc);
-  return arr.sort(function(a, b) {
+  return arr.sort(function (a, b) {
     if (desc) {
       return !compareObject(a, b);
     } else {
@@ -885,20 +860,20 @@ function sortArray(arr, desc) {
   });
 }
 /**
- * 
- * @param {object[]} arr 
+ *
+ * @param {object[]} arr
  * @param {string|string[]} sorter ["name", "-age", "height"]
- * @returns 
+ * @returns
  */
 function sortObject(arr, sorter) {
   if (typeof sorter === "string") {
     sorter = sorter.split(" ").filter(Boolean);
   }
-  return arr.sort(function(a, b) {
+  return arr.sort(function (a, b) {
     for (const key of sorter) {
       const d = /^-/.test(key),
-            k = key.replace(/^-/, ""),
-            r = compareObject(a[k], b[k]);
+        k = key.replace(/^-/, ""),
+        r = compareObject(a[k], b[k]);
       if (r !== 0) {
         if (d) {
           return -r;
@@ -1021,8 +996,8 @@ function groupByKey(arr, key) {
   return group;
 }
 /**
- * Query operator list:  
- * $and, $nand, $or, $nor, $in, $nin, $gt, $gte, $lt, $lte, $eq, $ne, $fn, $re  
+ * Query operator list:
+ * $and, $nand, $or, $nor, $in, $nin, $gt, $gte, $lt, $lte, $eq, $ne, $fn, $re
  * https://www.mongodb.com/docs/manual/tutorial/query-documents/
  * @param {object} obj
  * @param {object} qry
@@ -1234,7 +1209,6 @@ export {
   isSameType,
   getRandomNumber,
   getBezierPoint,
-  setAnimation,
   generateObjectId,
   generateUUID,
   encryptString,

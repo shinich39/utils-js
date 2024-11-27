@@ -65,13 +65,36 @@ const res = utils.getBezierPoint(data, time);
 // [ 0.40625, 0.875 ]
 ```
 
-- utils.setAnimation(data, cb, time, tick)
-
 ```js
+function setAnimation(data, cb, time, tick) {
+  if (!time) {
+    time = 1000;
+  }
+  if (!tick) {
+    tick = 10;
+  }
+  let now = 0,
+      d = getBezierPoint(data, now / time, now);
+
+  cb(d, now, anim());
+
+  function anim() {
+    now += tick;
+    d = getBezierPoint(data, now / time);
+    return setTimeout(function() {
+      if (now < time) {
+        cb(d, now, anim());
+      } else {
+        cb(d, now, null);
+      }
+    }, tick);
+  }
+}
+
 const data = [[0, 0], [0.25, 1], [0.5, 1], [1, 1]];
 const time = 1000; // ms
 const tick = 10; // ms
-const res = utils.setAnimation(data, function([x, y], now, timer) {
+const res = setAnimation(data, function([x, y], now, timer) {
   console.log(`${now}: ${x} ${y}`);
   // ...
   // 970: 0.9556682499999999 0.999973
@@ -312,6 +335,49 @@ const res = utils.parsePath(str);
 //   dirname: 'EPUB/styles',
 //   extname: '.css'
 // }
+```
+
+```js
+function removeRootDirectories(arr) {
+  arr = arr.map(utils.parsePath);
+
+  let dirIndex = 0,
+      isMatched = true;
+  while(isMatched) {
+    for (let i = 1; i < arr.length; i++) {
+      if (arr[0].dirs[dirIndex] !== arr[i].dirs[dirIndex]) {
+        isMatched = false;
+        break;
+      }
+    }
+    if (isMatched) {
+      dirIndex++;
+    }
+  }
+
+  return arr
+    .map(item => item.dirs.slice(dirIndex)
+    .concat([item.basename]).join("/"));
+}
+
+const arr = [
+  "EPUB/inner/styles/default.css",
+  "EPUB/inner/styles/style.css",
+  "EPUB/inner/images/image1.jpg",
+  "./EPUB/inner/images/image1.png",
+  "EPUB/inner/images/1/image1.jpg",
+  "./EPUB/index.js",
+];
+
+const res = removeRootDirectories(arr);
+// [
+//   'inner/styles/default.css',
+//   'inner/styles/style.css',
+//   'inner/images/image1.jpg',
+//   'inner/images/image1.png',
+//   'inner/images/1/image1.jpg',
+//   'index.js'
+// ]
 ```
 
 - utils.getMinValue(arr)

@@ -24,11 +24,6 @@ console.log("isSameType", utils.isSameType(1, 2));
 console.log("isSameType", utils.isSameType(null, null));
 
 console.log("getRandomNumber", utils.getRandomNumber(0, 1));
-
-utils.setAnimation([[0, 0], [0.25, 1], [0.5, 1], [1, 1]], function([x, y], now, timer) {
-  console.log(`setAnimation ${now}: ${x} ${y}`);
-}, 1, 1);
-
 console.log("generateObjectId", utils.generateObjectId());
 console.log("generateUUID", utils.generateUUID());
 console.log("encryptString", utils.encryptString("Lorem ipsum dolor sit amet.", "3939"));
@@ -182,4 +177,35 @@ async function promiseOne() { return i++; }
 const promises = [promiseOne, promiseOne, promiseOne];
 utils.promiseAll(promises).then((res) => console.log("promiseAll", res))
 
+// Remove subdirs
+// let ps39 = [
+//   "EPUB/EPUB2/styles/default.css",
+//   "EPUB/EPUB2/styles/style.css",
+//   "EPUB/EPUB2/images/image1.jpg",
+//   "./EPUB/EPUB2/images/image1.png",
+//   "EPUB/EPUB2/images/1/image1.jpg",
+//   "./EPUB/index.js",
+// ];
 
+// console.log(removeRootDirectories(ps39))
+  
+// function removeRootDirectories(arr) {
+//   arr = arr.map(utils.parsePath);
+
+//   let dirIndex = 0,
+//       isMatched = true;
+//   while(isMatched) {
+//     for (let i = 1; i < arr.length; i++) {
+//       if (arr[0].dirs[dirIndex] !== arr[i].dirs[dirIndex]) {
+//         isMatched = false;
+//         break;
+//       }
+//     }
+//     if (isMatched) {
+//       dirIndex++;
+//     }
+//   }
+
+//   arr = arr.map(item => item.dirs.slice(dirIndex).concat([item.basename]).join("/"));
+//   return arr;
+// }

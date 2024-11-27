@@ -109,27 +109,6 @@ function getBezierPoint(data, time) {
   }
   return getBezierPoint(d, time);
 }
-function setAnimation(data, cb, time, tick) {
-  if (!time) {
-    time = 1e3;
-  }
-  if (!tick) {
-    tick = 10;
-  }
-  let now = 0, d = getBezierPoint(data, now / time, now);
-  cb(d, now, anim());
-  function anim() {
-    now += tick;
-    d = getBezierPoint(data, now / time);
-    return setTimeout(function() {
-      if (now < time) {
-        cb(d, now, anim());
-      } else {
-        cb(d, now, null);
-      }
-    }, tick);
-  }
-}
 function splitInt(str) {
   return str.split(/([0-9]+)/);
 }
@@ -820,7 +799,6 @@ export {
   parseTemplate,
   promiseAll,
   queryObject,
-  setAnimation,
   shuffleArray,
   sortArray,
   sortObject,

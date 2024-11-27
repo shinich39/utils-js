@@ -66,7 +66,6 @@ var utils = (() => {
     parseTemplate: () => parseTemplate,
     promiseAll: () => promiseAll,
     queryObject: () => queryObject,
-    setAnimation: () => setAnimation,
     shuffleArray: () => shuffleArray,
     sortArray: () => sortArray,
     sortObject: () => sortObject,
@@ -187,27 +186,6 @@ var utils = (() => {
       d.push([x, y]);
     }
     return getBezierPoint(d, time);
-  }
-  function setAnimation(data, cb, time, tick) {
-    if (!time) {
-      time = 1e3;
-    }
-    if (!tick) {
-      tick = 10;
-    }
-    let now = 0, d = getBezierPoint(data, now / time, now);
-    cb(d, now, anim());
-    function anim() {
-      now += tick;
-      d = getBezierPoint(data, now / time);
-      return setTimeout(function() {
-        if (now < time) {
-          cb(d, now, anim());
-        } else {
-          cb(d, now, null);
-        }
-      }, tick);
-    }
   }
   function splitInt(str) {
     return str.split(/([0-9]+)/);
