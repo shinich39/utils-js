@@ -233,7 +233,7 @@ const res = utils.toHalfWidth(str);
 - utils.compareString(strA, strB)
 
 ```js
-// Compare characters.
+// Compare characters
 const a = "Lorem ipsum dolor sit amet.";
 const b = "Lorem ipsum foobar sit aget.";
 const res = utils.compareString(a, b);
@@ -256,7 +256,7 @@ const res = utils.compareString(a, b);
 ```
 
 ```js
-// Compare words.
+// Compare words
 const a = "Lorem ipsum dolor sit amet.".split(/([\s])/g);
 const b = "Lorem ipsum foobar sit aget.".split(/([\s])/g);
 const res = utils.compareString(a, b);
@@ -270,6 +270,37 @@ const res = utils.compareString(a, b);
 //     { type: -1, value: 'amet.' },
 //     { type: 1, value: 'aget.' }
 //   ]
+// }
+```
+
+```js
+// Get the most similar string
+const str = "Lorem ipsum dolor sit amet.";
+const arr = [
+  "Lorem dolor sit amet.",
+  "Lorem sit amet.",
+  "Lorem ipsum sit amet.",
+  "Lorem ipsum bolor sit amet.",
+];
+
+const res = arr.reduce(function(prev, curr) {
+  const r = utils.compareString(str, curr);
+  if (!prev || prev.acc < r.acc) {
+    r.orig = curr;
+    return r;
+  } else {
+    return prev;
+  }
+}, null);
+// {
+//   acc: 0.9629629629629629,
+//   result: [
+//     { type: 0, value: 'Lorem ipsum ' },
+//     { type: -1, value: 'd' },
+//     { type: 1, value: 'b' },
+//     { type: 0, value: 'olor sit amet.' }
+//   ],
+//   orig: 'Lorem ipsum bolor sit amet.'
 // }
 ```
 

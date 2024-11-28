@@ -1,4 +1,4 @@
-import * as utils from "../index.js";
+import * as utils from "../dist/utils.min.mjs";
 import path from "node:path";
 // import * as utils from "./util.mjs";
 // const utils = require("./dist/util.cjs");
@@ -51,6 +51,28 @@ console.log("toFullWidth", utils.toFullWidth("Lorem ipsum dolor sit amet."));
 console.log("toHalfWidth", utils.toHalfWidth("Ｌｏｒｅｍ　ｉｐｓｕｍ　ｄｏｌｏｒ　ｓｉｔ　ａｍｅｔ．"));
 
 console.log("compareString", utils.compareString("Lorem ipsum dolor sit amet.", "Lorem ipsum foobar sit aget."));
+;(() => {
+  const str = "Lorem ipsum dolor sit amet.";
+  const arr = [
+    "Lorem dolor sit amet.",
+    "Lorem sit amet.",
+    "Lorem ipsum sit amet.",
+    "Lorem ipsum bolor sit amet.",
+  ];
+  
+  const res = arr.reduce(function(prev, curr) {
+    const r = utils.compareString(str, curr);
+    if (!prev || prev.acc < r.acc) {
+      r.orig = curr;
+      return r;
+    } else {
+      return prev;
+    }
+  }, null);
+
+  console.log("compareString", res);
+})();
+
 console.log("compareObject", utils.compareObject("a2", "a10"));
 
 console.log("parseCommand", utils.parseCommand("git commit -m \"update 'many' features\" -f true"));
@@ -71,14 +93,45 @@ console.log("parseTemplate", utils.parseTemplate("${a} ${b.bb.bbb} ${c[cc]['ccc'
   } 
 }));
 
-const p39 = "EPUB/styles/default.css";
-console.log("parsePath", utils.parsePath(p39));
-console.log("node:path", {
-  filename: path.basename(p39, path.extname(p39)),
-  basename: path.basename(p39),
-  extname: path.extname(p39),
-  dirname: path.dirname(p39),
-});
+;(() => {
+  const str = "EPUB/styles/default.css";
+  console.log("parsePath", utils.parsePath(str));
+})();
+
+// Remove subdirs
+;(() => {
+  let arr = [
+    "EPUB/EPUB2/styles/default.css",
+    "EPUB/EPUB2/styles/style.css",
+    "EPUB/EPUB2/images/image1.jpg",
+    "./EPUB/EPUB2/images/image1.png",
+    "EPUB/EPUB2/images/1/image1.jpg",
+    "./EPUB/index.js",
+  ];
+      
+  function removeRootDirectories(arr) {
+    arr = arr.map(utils.parsePath);
+  
+    let dirIndex = 0,
+        isMatched = true;
+    while(isMatched) {
+      for (let i = 1; i < arr.length; i++) {
+        if (arr[0].dirs[dirIndex] !== arr[i].dirs[dirIndex]) {
+          isMatched = false;
+          break;
+        }
+      }
+      if (isMatched) {
+        dirIndex++;
+      }
+    }
+  
+    arr = arr.map(item => item.dirs.slice(dirIndex).concat([item.basename]).join("/"));
+    return arr;
+  }
+
+  console.log("parsePath", removeRootDirectories(arr))
+})();
 
 console.log("getMinValue", utils.getMinValue([1, 2, 3, 4, 5, 6]));
 console.log("getMaxValue", utils.getMaxValue([1, 2, 3, 4, 5, 6]));
@@ -176,36 +229,3 @@ var i = 0;
 async function promiseOne() { return i++; }
 const promises = [promiseOne, promiseOne, promiseOne];
 utils.promiseAll(promises).then((res) => console.log("promiseAll", res))
-
-// Remove subdirs
-// let ps39 = [
-//   "EPUB/EPUB2/styles/default.css",
-//   "EPUB/EPUB2/styles/style.css",
-//   "EPUB/EPUB2/images/image1.jpg",
-//   "./EPUB/EPUB2/images/image1.png",
-//   "EPUB/EPUB2/images/1/image1.jpg",
-//   "./EPUB/index.js",
-// ];
-
-// console.log(removeRootDirectories(ps39))
-  
-// function removeRootDirectories(arr) {
-//   arr = arr.map(utils.parsePath);
-
-//   let dirIndex = 0,
-//       isMatched = true;
-//   while(isMatched) {
-//     for (let i = 1; i < arr.length; i++) {
-//       if (arr[0].dirs[dirIndex] !== arr[i].dirs[dirIndex]) {
-//         isMatched = false;
-//         break;
-//       }
-//     }
-//     if (isMatched) {
-//       dirIndex++;
-//     }
-//   }
-
-//   arr = arr.map(item => item.dirs.slice(dirIndex).concat([item.basename]).join("/"));
-//   return arr;
-// }
