@@ -209,8 +209,8 @@ function generateRandomNumber(min, max) {
   return Math.random() * (max - min) + min;
 }
 /**
- * 
- * @param {string} charset 
+ *
+ * @param {string} charset
  * @returns {string}
  */
 function generateRandomString(charset) {
@@ -246,20 +246,20 @@ function generateUUID() {
   });
 }
 /**
- * 
- * @param {number} num 
- * @param {number} min 
- * @param {number} max 
+ *
+ * @param {number} num
+ * @param {number} min
+ * @param {number} max
  * @returns {number} min <= n <= max
  */
 function getClampedNumber(num, min, max) {
   return Math.min(max, Math.max(num, min));
 }
 /**
- * 
- * @param {number} num 
- * @param {number} min 
- * @param {number} max 
+ *
+ * @param {number} num
+ * @param {number} min
+ * @param {number} max
  * @returns {number} min <= n < max
  */
 function getContainedNumber(num, min, max) {
@@ -625,9 +625,11 @@ function getMaxValue(arr) {
  * @returns {number}
  */
 function getMeanValue(arr) {
-  return arr.reduce(function (prev, curr) {
-    return prev + curr;
-  }, 0) / arr.length;
+  return (
+    arr.reduce(function (prev, curr) {
+      return prev + curr;
+    }, 0) / arr.length
+  );
 }
 /**
  * Get most frequent value in array.

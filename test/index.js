@@ -29,7 +29,7 @@ console.log("generateObjectId", utils.generateObjectId());
 console.log("generateUUID", utils.generateUUID());
 
 console.log("getClampedNumber", utils.getClampedNumber(10, -5, 2));
-console.log("getContainedNumber", utils.getContainedNumber(-1, 2, 10));
+console.log("getContainedNumber", utils.getContainedNumber(-3, -2, 10));
 console.log("getContainedNumber", utils.getContainedNumber(0, 2, 10));
 console.log("getContainedNumber", utils.getContainedNumber(100, 2, 10));
 
