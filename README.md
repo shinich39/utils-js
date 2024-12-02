@@ -49,66 +49,18 @@ const res = utils.isSameType(1, 2); // true
 const res = utils.isSameType(null, null); // true
 ```
 
-- utils.getRandomNumber(min, max)
+- utils.generateRandomNumber(min, max)
 
 ```js
-const res = utils.getRandomNumber(0, 1);
+const res = utils.generateRandomNumber(0, 1);
 // 0 <= n < 1
 ```
 
-- utils.getBezierPoint(data, time)
+- utils.generateRandomString(min, max)
 
 ```js
-const data = [[0, 0], [0.25, 1], [0.5, 1], [1, 1]];
-const time = 0.5;
-const res = utils.getBezierPoint(data, time);
-// [ 0.40625, 0.875 ]
-```
-
-```js
-function setAnimation(data, cb, time, tick) {
-  if (!time) {
-    time = 1000;
-  }
-  if (!tick) {
-    tick = 10;
-  }
-  let now = 0,
-      d = getBezierPoint(data, now / time, now);
-
-  cb(d, now, anim());
-
-  function anim() {
-    now += tick;
-    d = getBezierPoint(data, now / time);
-    return setTimeout(function() {
-      if (now < time) {
-        cb(d, now, anim());
-      } else {
-        cb(d, now, null);
-      }
-    }, tick);
-  }
-}
-
-const data = [[0, 0], [0.25, 1], [0.5, 1], [1, 1]];
-const time = 1000; // ms
-const tick = 10; // ms
-const res = setAnimation(data, function([x, y], now, timer) {
-  console.log(`${now}: ${x} ${y}`);
-  // ...
-  // 970: 0.9556682499999999 0.999973
-  // 980: 0.970298 0.999992
-  // 990: 0.9850747499999999 0.999999
-  // 1000: 1 1
-  
-  if (!timer) {
-    // end
-  } else {
-    // stop
-    clearTimeout(timer);
-  }
-}, time, tick);
+const res = utils.generateRandomString("ABCDE");
+// E
 ```
 
 - utils.generateObjectId()
@@ -125,6 +77,30 @@ const res = utils.generateUUID();
 // 93cbe72f-a5aa-4b31-acee-409a17c1849f
 ```
 
+- utils.getClampedNumber(num, min, max)
+
+```js
+const res = utils.getClampedNumber(10, -5, 2);
+// 2
+```
+
+- utils.getContainedNumber(num, min, max)
+
+```js
+const res = utils.getContainedNumber(-1, 2, 10);
+// 7
+const res = utils.getContainedNumber(0, 2, 10);
+// 8
+const res = utils.getContainedNumber(1, 2, 10);
+// 9
+const res = utils.getContainedNumber(2, 2, 10);
+// 2
+const res = utils.getContainedNumber(3, 2, 10);
+// 3
+const res = utils.getContainedNumber(100, 2, 10);
+// 4
+```
+
 - utils.encryptString(str, salt)
 
 ```js
@@ -134,23 +110,6 @@ const encrypted = utils.encryptString(str, salt);
 // VA\^ZI@L^WV_VA@PGRTVM
 
 const decrypted = utils.encryptString(encrypted, salt);
-// Lorem ipsum dolor sit amet.
-```
-
-- utils.toBase64(str, type)
-
-```js
-const str = "Lorem ipsum dolor sit amet.";
-const type = "image/jpeg"; // optional
-const res = utils.toBase64(str, type);
-// data:image/jpeg;base64,TG9yZW0gaXBzdW0gZG9sb3Igc2l0IGFtZXQu
-```
-
-- utils.fromBase64(str)
-
-```js
-const str = "TG9yZW0gaXBzdW0gZG9sb3Igc2l0IGFtZXQu";
-const res = utils.fromBase64(str);
 // Lorem ipsum dolor sit amet.
 ```
 
@@ -168,41 +127,6 @@ const res = utils.splitInt(str);
 const str = "Oregano Leaves, 0.5 tsp";
 const res = utils.splitFloat(str);
 // [ 'Oregano Leaves, ', '0.5', ' tsp' ]
-```
-
-- utils.getExtension(path)
-
-```js
-const str = "EPUB/styles/default.css";
-const res = utils.getExtension(str);
-// .css
-```
-
-- utils.getFilename(path, ext)
-
-```js
-const str = "EPUB/styles/default.css";
-const res = utils.getFilename(str);
-// default.css
-
-const res = utils.getFilename(str, utils.getExtension(str));
-// default
-```
-
-- utils.getDirectoryPath(path)
-
-```js
-const str = "EPUB/styles/default.css";
-const res = utils.getDirectoryPath(str);
-// EPUB/styles
-```
-
-- utils.getDirectoryPath(path)
-
-```js
-const str = "EPUB/styles/default.css";
-const res = utils.getDirectoryPath(str);
-// EPUB/styles
 ```
 
 - utils.getRelativePath(from, to)
@@ -473,7 +397,7 @@ const res = utils.sortArray(arr, false);
 // [null, false, true, 1, 'a-9', 'a-10', 'b-2', 'b-11']
 ```
 
-- utils.sortObject(arr, sorter)
+- utils.sortBy(arr, sorter)
 
 ```js
 const arr = [{
@@ -495,7 +419,7 @@ const arr = [{
 }];
 const sorter = ["type", "-age", "height"];
 // const sorter = "type -age height";
-const res = utils.sortObject(arr, sorter);
+const res = utils.sortBy(arr, sorter);
 // [
 //   { age: 10, height: 150, type: 'a' },
 //   { age: 12, height: 140, type: 'b' },
@@ -658,5 +582,3 @@ const res = await utils.promiseAll(funcs);
 ```
 
 ## References
-
-- [base64](https://github.com/mathiasbynens/base64)

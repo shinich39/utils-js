@@ -205,26 +205,76 @@ function isSameType(objA, objB) {
  * @param {number} max
  * @returns {number} min <= n < max
  */
-function getRandomNumber(min, max) {
+function generateRandomNumber(min, max) {
   return Math.random() * (max - min) + min;
 }
 /**
- *
- * @param {array} data [[x, y], ...]
- * @param {number} time value between 0 and 1
- * @returns {[x, y]}
+ * 
+ * @param {string} charset 
+ * @returns {string}
  */
-function getBezierPoint(data, time) {
-  if (data.length === 1) {
-    return data[0];
+function generateRandomString(charset) {
+  return charset.charAt(Math.floor(Math.random() * charset.length));
+}
+/**
+ * Generate object id
+ * @returns {string}
+ */
+function generateObjectId() {
+  return (
+    Math.floor(new Date().getTime() / 1000).toString(16) +
+    "xxxxxx".replace(/x/g, function (v) {
+      return Math.floor(Math.random() * 16).toString(16);
+    }) +
+    (__uniq__++).toString(16).padStart(6, "0")
+  );
+}
+/**
+ * Generate uuid v4
+ * @returns {string}
+ */
+function generateUUID() {
+  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (c) {
+    let r = (Math.random() * 16) | 0,
+      v;
+    if (c == "x") {
+      v = r;
+    } else {
+      v = (r & 0x3) | 0x8;
+    }
+    return v.toString(16);
+  });
+}
+/**
+ * 
+ * @param {number} num 
+ * @param {number} min 
+ * @param {number} max 
+ * @returns {number} min <= n <= max
+ */
+function getClampedNumber(num, min, max) {
+  return Math.min(max, Math.max(num, min));
+}
+/**
+ * 
+ * @param {number} num 
+ * @param {number} min 
+ * @param {number} max 
+ * @returns {number} min <= n < max
+ */
+function getContainedNumber(num, min, max) {
+  num -= min;
+  max -= min;
+
+  if (num < 0) {
+    num = (num % max) + max;
   }
-  let d = [];
-  for (let i = 0; i < data.length - 1; i++) {
-    let x = (1 - time) * data[i][0] + time * data[i + 1][0];
-    let y = (1 - time) * data[i][1] + time * data[i + 1][1];
-    d.push([x, y]);
+
+  if (num >= max) {
+    num = num % max;
   }
-  return getBezierPoint(d, time);
+
+  return num + min;
 }
 /**
  *
@@ -241,41 +291,6 @@ function splitInt(str) {
  */
 function splitFloat(str) {
   return str.split(/([0-9]+\.[0-9]+)+/);
-}
-/**
- *
- * @param {string} path
- * @returns {string}
- */
-function getExtension(path) {
-  if (/\.[^\\\/.]+?$/.test(path)) {
-    return "." + path.split(".").pop();
-  } else {
-    return "";
-  }
-}
-/**
- *
- * @param {string} path
- * @param {string|null} ext e.g. ".jpg", ".png",".txt" ...
- * @returns {string}
- */
-function getFilename(path, ext) {
-  if (typeof ext === "string") {
-    path = path.replace(new RegExp(ext + "$"), "");
-  }
-  return path
-    .replace(/[\\\/]$/, "")
-    .split(/[\\\/]/)
-    .pop();
-}
-/**
- *
- * @param {string} path
- * @returns {string}
- */
-function getDirectoryPath(path) {
-  return path.replace(/[^\\\/]+[\\\/]?$/, "").replace(/[\\\/]+$/, "") || ".";
 }
 /**
  *
@@ -306,9 +321,7 @@ function toHalfWidth(str) {
     .replace(/[！-～]/g, function (ch) {
       return String.fromCharCode(ch.charCodeAt(0) - 0xfee0);
     })
-    .replace(/[^\S\r\n]/g, function (ch) {
-      return " ";
-    });
+    .replace(/[^\S\r\n]/g, " ");
 }
 /**
  *
@@ -320,9 +333,7 @@ function toFullWidth(str) {
     .replace(/[!-~]/g, function (ch) {
       return String.fromCharCode(ch.charCodeAt(0) + 0xfee0);
     })
-    .replace(/[^\S\r\n]/g, function (ch) {
-      return "　";
-    });
+    .replace(/[^\S\r\n]/g, "　");
 }
 /**
  * Get diff between two strings.
@@ -405,35 +416,6 @@ function compareString(strA, strB) {
   return P(M(C(strA, strB), strA, strB), strA, strB);
 }
 /**
- * Generate object id
- * @returns {string}
- */
-function generateObjectId() {
-  return (
-    Math.floor(new Date().getTime() / 1000).toString(16) +
-    "xxxxxx".replace(/x/g, function (v) {
-      return Math.floor(Math.random() * 16).toString(16);
-    }) +
-    (__uniq__++).toString(16).padStart(6, "0")
-  );
-}
-/**
- * Generate uuid v4
- * @returns {string}
- */
-function generateUUID() {
-  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (c) {
-    let r = (Math.random() * 16) | 0,
-      v;
-    if (c == "x") {
-      v = r;
-    } else {
-      v = (r & 0x3) | 0x8;
-    }
-    return v.toString(16);
-  });
-}
-/**
  * Encrypt string with xor cipher
  * @param {string} str
  * @param {string} salt
@@ -453,116 +435,6 @@ function encryptString(str, salt) {
     i++;
   }
   return res;
-}
-/**
- * Ref. https://github.com/mathiasbynens/base64
- * @param {string} str
- * @param {string|undefined} type mimetype
- * @returns {string} base64
- */
-function toBase64(str, type) {
-  const charset =
-    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
-
-  str = String(str);
-  if (/[^\0-\xFF]/.test(str)) {
-    // Note: no need to special-case astral symbols here, as surrogates are
-    // matched, and the input is supposed to only contain ASCII anyway.
-    throw new Error(
-      "The string to be encoded contains characters outside of the Latin1 range."
-    );
-  }
-  let padding = str.length % 3,
-    output = "",
-    position = -1,
-    a,
-    b,
-    c,
-    buffer;
-  // Make sure any padding is handled outside of the loop.
-  let length = str.length - padding;
-
-  while (++position < length) {
-    // Read three bytes, i.e. 24 bits.
-    a = str.charCodeAt(position) << 16;
-    b = str.charCodeAt(++position) << 8;
-    c = str.charCodeAt(++position);
-    buffer = a + b + c;
-    // Turn the 24 bits into four chunks of 6 bits each, and append the
-    // matching character for each of them to the output.
-    output +=
-      charset.charAt((buffer >> 18) & 0x3f) +
-      charset.charAt((buffer >> 12) & 0x3f) +
-      charset.charAt((buffer >> 6) & 0x3f) +
-      charset.charAt(buffer & 0x3f);
-  }
-
-  if (padding == 2) {
-    a = str.charCodeAt(position) << 8;
-    b = str.charCodeAt(++position);
-    buffer = a + b;
-    output +=
-      charset.charAt(buffer >> 10) +
-      charset.charAt((buffer >> 4) & 0x3f) +
-      charset.charAt((buffer << 2) & 0x3f) +
-      "=";
-  } else if (padding == 1) {
-    buffer = str.charCodeAt(position);
-    output +=
-      charset.charAt(buffer >> 2) + charset.charAt((buffer << 4) & 0x3f) + "==";
-  }
-
-  if (type) {
-    return "data:" + type + ";base64," + output;
-  } else {
-    return output;
-  }
-}
-/**
- * Ref. https://github.com/mathiasbynens/base64
- * @param {string} str base64
- * @returns {string}
- */
-function fromBase64(str) {
-  const charset =
-    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
-
-  str = String(str)
-    .replace(/^data:([A-Za-z-+\/]+);[A-Za-z0-9]+,/, "")
-    .replace(/[\t\n\f\r ]/g, "");
-  let length = str.length;
-  if (length % 4 == 0) {
-    str = str.replace(/==?$/, "");
-    length = str.length;
-  }
-  // http://whatwg.org/C#alphanumeric-ascii-characters
-  if (length % 4 == 1 || /[^+a-zA-Z0-9/]/.test(str)) {
-    throw new Error(
-      "Invalid character: the string to be decoded is not correctly encoded."
-    );
-  }
-  let bitCounter = 0,
-    bitStorage,
-    buffer,
-    output = "",
-    position = -1;
-  while (++position < length) {
-    buffer = charset.indexOf(str.charAt(position));
-    bitStorage;
-    if (bitCounter % 4) {
-      bitStorage = bitStorage * 64 + buffer;
-    } else {
-      bitStorage = buffer;
-    }
-    // Unless this is the first of a group of 4 characters…
-    if (bitCounter++ % 4) {
-      // …convert the first 8 bits to a single ASCII character.
-      output += String.fromCharCode(
-        0xff & (bitStorage >> ((-2 * bitCounter) & 6))
-      );
-    }
-  }
-  return output;
 }
 /**
  * Parse string command to array.
@@ -863,7 +735,7 @@ function sortArray(arr, desc) {
  * @param {string|string[]} sorter ["name", "-age", "height"]
  * @returns
  */
-function sortObject(arr, sorter) {
+function sortBy(arr, sorter) {
   if (typeof sorter === "string") {
     sorter = sorter.split(" ").filter(Boolean);
   }
@@ -903,7 +775,7 @@ function shuffleArray(arr) {
  * @returns {any}
  */
 function getRandomValue(arr) {
-  return arr[Math.floor(getRandomNumber(0, arr.length))];
+  return arr[Math.floor(generateRandomNumber(0, arr.length))];
 }
 /**
  * Get all cases.
@@ -1206,18 +1078,15 @@ export {
   isFunction,
   isEmpty,
   isSameType,
-  getRandomNumber,
-  getBezierPoint,
+  generateRandomNumber,
+  generateRandomString,
   generateObjectId,
   generateUUID,
+  getClampedNumber,
+  getContainedNumber,
   encryptString,
-  toBase64,
-  fromBase64,
   splitInt,
   splitFloat,
-  getExtension,
-  getFilename,
-  getDirectoryPath,
   getRelativePath,
   toHalfWidth,
   toFullWidth,
@@ -1234,7 +1103,7 @@ export {
   getRandomValue,
   createArray,
   sortArray,
-  sortObject,
+  sortBy,
   shuffleArray,
   spreadArray,
   copyObject,

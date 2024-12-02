@@ -23,27 +23,21 @@ console.log("isEmpty", utils.isEmpty(null));
 console.log("isSameType", utils.isSameType(1, 2));
 console.log("isSameType", utils.isSameType(null, null));
 
-console.log("getRandomNumber", utils.getRandomNumber(0, 1));
+console.log("generateRandomNumber", utils.generateRandomNumber(0, 1));
+console.log("generateRandomString", utils.generateRandomString("ABCDE"));
 console.log("generateObjectId", utils.generateObjectId());
 console.log("generateUUID", utils.generateUUID());
-console.log("encryptString", utils.encryptString("Lorem ipsum dolor sit amet.", "3939"));
 
-console.log("toBase64", utils.toBase64("Lorem ipsum dolor sit amet.", "image/jpeg"));
-console.log("fromBase64", utils.fromBase64("TG9yZW0gaXBzdW0gZG9sb3Igc2l0IGFtZXQu"));
+console.log("getClampedNumber", utils.getClampedNumber(10, -5, 2));
+console.log("getContainedNumber", utils.getContainedNumber(-1, 2, 10));
+console.log("getContainedNumber", utils.getContainedNumber(0, 2, 10));
+console.log("getContainedNumber", utils.getContainedNumber(100, 2, 10));
+
+console.log("encryptString", utils.encryptString("Lorem ipsum dolor sit amet.", "3939"));
 
 console.log("splitInt", utils.splitInt("Oregano Leaves, 0.5 tsp"));
 console.log("splitFloat", utils.splitFloat("Oregano Leaves, 0.5 tsp"));
 
-// console.log("getExtension", utils.getExtension("EPUB/styles/default.css"));
-// console.log("getExtension", utils.getExtension("EPUB/styles/default.tar.gz"));
-// console.log("getFilename", utils.getFilename("EPUB/styles/default.css"));
-// console.log("getFilename", utils.getFilename("EPUB/styles/default.css", utils.getExtension("EPUB/styles/default.css")));
-// console.log("getDirectoryPath", utils.getDirectoryPath("EPUB/styles/default.css"), path.dirname("EPUB/styles/default.css"));
-// console.log("getDirectoryPath", utils.getDirectoryPath("EPUB/styles/"), path.dirname("EPUB/styles/"));
-// console.log("getDirectoryPath", utils.getDirectoryPath("EPUB/styles"), path.dirname("EPUB/styles"));
-// console.log("getDirectoryPath", utils.getDirectoryPath("./"), path.dirname("./"));
-// console.log("getDirectoryPath", utils.getDirectoryPath("."), path.dirname("."));
-// console.log("getDirectoryPath", utils.getDirectoryPath(""), path.dirname(""));
 console.log("getRelativePath", utils.getRelativePath("META-INF/container.xml", "EPUB/styles/default.css"));
 console.log("getRelativePath", utils.getRelativePath("META-INF/container.xml", "META-INF/container.xml"));
 
@@ -143,7 +137,7 @@ console.log("createArray", utils.createArray(5, (index) => index));
 
 console.log("sortArray", utils.sortArray(["a-10", "b-2", true, "b-11", "a-9", null, 1, false]));
 
-console.log("sortObject", utils.sortObject( [{
+console.log("sortBy", utils.sortBy( [{
   type: "a",
   age: 10,
   height: 150,
