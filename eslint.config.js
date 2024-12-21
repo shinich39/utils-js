@@ -14,6 +14,8 @@ export default [
     },
     rules: {
       ...eslint.configs.recommended.rules,
+      "no-unused-vars": "warn",
+      "no-useless-escape": "warn",
     },
   },
 ];

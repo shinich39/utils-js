@@ -236,7 +236,7 @@ function generateObjectId(time, index) {
   }
   return (
     Math.floor(time).toString(16) +
-    "xxxxxxxxxx".replace(/x/g, function () {
+    "xxxxxxxxxx".replace(/x/g, function (v) {
       return Math.floor(Math.random() * 16).toString(16);
     }) +
     Math.floor(index).toString(16).padStart(6, "0")
@@ -429,7 +429,7 @@ function fromBase64(str) {
     "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
   str = String(str)
-    .replace(/^data:([A-Za-z-+/]+);[A-Za-z0-9]+,/, "")
+    .replace(/^data:([A-Za-z-+\/]+);[A-Za-z0-9]+,/, "")
     .replace(/[\t\n\f\r ]/g, "");
   let length = str.length;
   if (length % 4 == 0) {
@@ -472,8 +472,8 @@ function fromBase64(str) {
  * @returns {string}
  */
 function getRelativePath(from, to) {
-  from = (from + "/").replace(/[\\/]+/g, "/").replace(/^\.?\//, "");
-  to = (to + "/").replace(/[\\/]+/g, "/").replace(/^\.?\//, "");
+  from = (from + "/").replace(/[\\\/]+/g, "/").replace(/^\.?\//, "");
+  to = (to + "/").replace(/[\\\/]+/g, "/").replace(/^\.?\//, "");
 
   let result = "";
   while (!to.startsWith(from)) {
@@ -482,7 +482,7 @@ function getRelativePath(from, to) {
   }
   result += to.substring(from.length, to.length);
 
-  return result.replace(/[\\/]$/, "");
+  return result.replace(/[\\\/]$/, "");
 }
 /**
  *
@@ -707,7 +707,7 @@ function parseTemplate(str, obj) {
 function parsePath(str) {
   // Normalize
   str = str
-    .replace(/[\\/]+/g, "/")
+    .replace(/[\\\/]+/g, "/")
     .replace(/\/$/, "")
     .replace(/^\.?\//, "");
 
@@ -719,7 +719,7 @@ function parsePath(str) {
 
   if (dirs.length > 0) {
     basename = dirs.pop();
-    if (/\.[^\\/.]+?$/.test(basename)) {
+    if (/\.[^\\\/.]+?$/.test(basename)) {
       extname = "." + basename.split(".").pop();
     }
     filename = basename.replace(new RegExp(extname + "$"), "");

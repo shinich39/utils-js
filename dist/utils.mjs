@@ -111,7 +111,7 @@ function generateObjectId(time, index) {
   } else {
     __object_id_index = index;
   }
-  return Math.floor(time).toString(16) + "xxxxxxxxxx".replace(/x/g, function() {
+  return Math.floor(time).toString(16) + "xxxxxxxxxx".replace(/x/g, function(v) {
     return Math.floor(Math.random() * 16).toString(16);
   }) + Math.floor(index).toString(16).padStart(6, "0");
 }
@@ -213,7 +213,7 @@ function toBase64(str, type) {
 }
 function fromBase64(str) {
   const charset = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
-  str = String(str).replace(/^data:([A-Za-z-+/]+);[A-Za-z0-9]+,/, "").replace(/[\t\n\f\r ]/g, "");
+  str = String(str).replace(/^data:([A-Za-z-+\/]+);[A-Za-z0-9]+,/, "").replace(/[\t\n\f\r ]/g, "");
   let length = str.length;
   if (length % 4 == 0) {
     str = str.replace(/==?$/, "");
@@ -242,15 +242,15 @@ function fromBase64(str) {
   return output;
 }
 function getRelativePath(from, to) {
-  from = (from + "/").replace(/[\\/]+/g, "/").replace(/^\.?\//, "");
-  to = (to + "/").replace(/[\\/]+/g, "/").replace(/^\.?\//, "");
+  from = (from + "/").replace(/[\\\/]+/g, "/").replace(/^\.?\//, "");
+  to = (to + "/").replace(/[\\\/]+/g, "/").replace(/^\.?\//, "");
   let result = "";
   while (!to.startsWith(from)) {
     result += "../";
     from = from.substring(0, from.lastIndexOf("/", from.length - 2) + 1);
   }
   result += to.substring(from.length, to.length);
-  return result.replace(/[\\/]$/, "");
+  return result.replace(/[\\\/]$/, "");
 }
 function toHalfWidth(str) {
   return str.replace(/[！-～]/g, function(ch) {
@@ -393,11 +393,11 @@ function parseTemplate(str, obj) {
   });
 }
 function parsePath(str) {
-  str = str.replace(/[\\/]+/g, "/").replace(/\/$/, "").replace(/^\.?\//, "");
+  str = str.replace(/[\\\/]+/g, "/").replace(/\/$/, "").replace(/^\.?\//, "");
   let dirs = str.split("/"), filename = "", basename = "", dirname = ".", extname = "";
   if (dirs.length > 0) {
     basename = dirs.pop();
-    if (/\.[^\\/.]+?$/.test(basename)) {
+    if (/\.[^\\\/.]+?$/.test(basename)) {
       extname = "." + basename.split(".").pop();
     }
     filename = basename.replace(new RegExp(extname + "$"), "");
