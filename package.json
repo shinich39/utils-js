@@ -1,0 +1,31 @@
+{
+  "name": "utils-js",
+  "version": "1.0.0",
+  "description": "Utilities for javascript development.",
+  "main": "./dist/utils.min.mjs",
+  "exports": {
+    ".": {
+      "import": "./dist/utils.min.cjs",
+      "require": "./dist/utils.min.mjs"
+    }
+  },
+  "type": "module",
+  "scripts": {
+    "init": "npm install && rimraf .git",
+    "test": "npm run pretty && npm run lint && npm run build && node test/index.js",
+    "build": "node esbuild.config.js",
+    "pretty": "prettier index.js --write --config prettier.config.js",
+    "lint": "eslint ."
+  },
+  "keywords": [
+    "javascript"
+  ],
+  "author": "shinich39 <shinich39@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "esbuild": "^0.24.2",
+    "eslint": "^9.17.0",
+    "prettier": "^3.4.2",
+    "rimraf": "^6.0.1"
+  }
+}
