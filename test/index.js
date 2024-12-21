@@ -1,6 +1,6 @@
-import * as utils from "../dist/utils.min.mjs";
+import * as utils from "../dist/utils.mjs";
 import path from "node:path";
-// import * as utils from "./util.mjs";
+import fs from "node:fs";
 // const utils = require("./dist/util.cjs");
 
 console.log("isBoolean", utils.isBoolean(true));
@@ -236,4 +236,8 @@ utils.wait(100).then(() => console.log("wait 100ms"));
 var i = 0;
 async function promiseOne() { return i++; }
 const promises = [promiseOne, promiseOne, promiseOne];
-utils.promiseAll(promises).then((res) => console.log("promiseAll", res))
+utils.promiseAll(promises).then((res) => console.log("promiseAll", res));
+
+const dom = utils.strToDom(fs.readFileSync("./test/index.html", "utf8"));
+console.log("strToDom", dom);
+console.log("domToStr", utils.domToStr(dom));
