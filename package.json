@@ -2,18 +2,18 @@
   "name": "utils-js",
   "version": "1.0.0",
   "description": "Utilities for javascript development.",
-  "main": "./dist/utils.min.mjs",
+  "main": "./dist/utils.mjs",
   "exports": {
     ".": {
-      "import": "./dist/utils.min.mjs",
-      "require": "./dist/utils.min.cjs"
+      "import": "./dist/utils.mjs",
+      "require": "./dist/utils.cjs"
     }
   },
   "type": "module",
   "scripts": {
-    "test": "npm run build && node test/index.js",
-    "build": "npm run pretty && node esbuild.config.js",
-    "pretty": "prettier index.js src/**/*.js --write --config prettier.config.js"
+    "test": "npm run pretty && npm run build && node test/index.js",
+    "build": "rollup --config rollup.config.js",
+    "pretty": "prettier index.js --write --config prettier.config.js"
   },
   "keywords": [
     "javascript"
@@ -21,7 +21,7 @@
   "author": "shinich39 <shinich39@gmail.com>",
   "license": "MIT",
   "devDependencies": {
-    "esbuild": "^0.24.2",
-    "prettier": "^3.4.2"
+    "prettier": "^3.4.2",
+    "rollup": "^4.29.1"
   }
 }

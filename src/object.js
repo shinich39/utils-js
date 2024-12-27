@@ -43,32 +43,13 @@ function groupByKey(arr, key) {
 }
 /**
  * Query operator list:
- * $and, $nand, $or, $nor, $in, $nin, $gt, $gte, $lt, $lte, $eq, $ne, $fn, $re
+ * $and, $nand, $or, $nor, $in, $nin, $gt, $gte, $lt, $lte, $eq, $ne, $exists, $fn, $re
  * https://www.mongodb.com/docs/manual/tutorial/query-documents/
  * @param {object} obj
  * @param {object} qry
  * @returns {boolean}
  */
 function queryObject(obj, qry) {
-  const QUERY_OPERATORS = {
-    and: ["$and"],
-    notAnd: ["$notAnd", "$nand"],
-    or: ["$or"],
-    notOr: ["$notOr", "$nor"],
-    not: ["$not"],
-    include: ["$include", "$in"],
-    exclude: ["$exclude", "$nin"],
-    greaterThan: ["$greaterThan", "$gt"],
-    greaterThanOrEqual: ["$greaterThanOrEqual", "$gte"],
-    lessThan: ["$lessThan", "$lt"],
-    lessThanOrEqual: ["$lessThanOrEqual", "$lte"],
-    equal: ["$equal", "$eq"],
-    notEqual: ["$notEqual", "$neq", "$ne"],
-    exists: ["$exists"],
-    function: ["$function", "$func", "$fn"],
-    regexp: ["$regexp", "$regex", "$re", "$reg"],
-  };
-
   function A(d, q) {
     for (const [key, value] of Object.entries(q)) {
       if (!B(d, value, key.split("."))) {
@@ -91,59 +72,59 @@ function queryObject(obj, qry) {
   }
 
   function C(d, q, o) {
-    if (QUERY_OPERATORS.and.indexOf(o) > -1) {
+    if (o === "$and") {
       for (const v of q) {
         if (!A(d, v)) {
           return false;
         }
       }
       return true;
-    } else if (QUERY_OPERATORS.notAnd.indexOf(o) > -1) {
+    } else if (o === "$nand") {
       return !C(d, q, "$and");
-    } else if (QUERY_OPERATORS.or.indexOf(o) > -1) {
+    } else if (o === "$or") {
       for (const v of q) {
         if (A(d, v)) {
           return true;
         }
       }
       return false;
-    } else if (QUERY_OPERATORS.notOr.indexOf(o) > -1) {
+    } else if (o === "$nor") {
       return !C(d, q, "$or");
-    } else if (QUERY_OPERATORS.not.indexOf(o) > -1) {
+    } else if (o === "$not") {
       return !A(d, q);
-    } else if (QUERY_OPERATORS.include.indexOf(o) > -1) {
+    } else if (o === "$in") {
       if (isArray(d)) {
         for (const v of d) {
-          if (!C(v, q, "$include")) {
+          if (!C(v, q, "$in")) {
             return false;
           }
         }
         return true;
       } else {
         for (const v of q) {
-          if (C(d, v, "$equal")) {
+          if (C(d, v, "$eq")) {
             return true;
           }
         }
         return false;
       }
-    } else if (QUERY_OPERATORS.exclude.indexOf(o) > -1) {
-      return !C(d, q, "$include");
-    } else if (QUERY_OPERATORS.greaterThan.indexOf(o) > -1) {
+    } else if (o === "$nin") {
+      return !C(d, q, "$in");
+    } else if (o === "$gt") {
       return d > q;
-    } else if (QUERY_OPERATORS.greaterThanOrEqual.indexOf(o) > -1) {
+    } else if (o === "$gte") {
       return d >= q;
-    } else if (QUERY_OPERATORS.lessThan.indexOf(o) > -1) {
+    } else if (o === "$lt") {
       return d < q;
-    } else if (QUERY_OPERATORS.lessThanOrEqual.indexOf(o) > -1) {
+    } else if (o === "$lte") {
       return d <= q;
-    } else if (QUERY_OPERATORS.equal.indexOf(o) > -1) {
+    } else if (o === "$eq") {
       if (isArray(d) && isArray(q)) {
         if (d.length !== q.length) {
           return false;
         }
         for (let i = 0; i < q.length; i++) {
-          if (!C(d[i], q[i], "$equal")) {
+          if (!C(d[i], q[i], "$eq")) {
             return false;
           }
         }
@@ -151,20 +132,20 @@ function queryObject(obj, qry) {
       } else {
         return d === q;
       }
-    } else if (QUERY_OPERATORS.notEqual.indexOf(o) > -1) {
-      return !C(d, q, "$equal");
-    } else if (QUERY_OPERATORS.exists.indexOf(o) > -1) {
+    } else if (o === "$ne") {
+      return !C(d, q, "$eq");
+    } else if (o === "$exists") {
       return (d !== null && d !== undefined) === Boolean(q);
-    } else if (QUERY_OPERATORS.function.indexOf(o) > -1) {
+    } else if (o === "$fn") {
       return q(d);
-    } else if (QUERY_OPERATORS.regexp.indexOf(o) > -1) {
+    } else if (o === "$re") {
       return q.test(d);
     } else if (!isObject(d)) {
       return false;
     } else if (isObject(q)) {
       return A(d[o], q);
     } else {
-      return C(d[o], q, "$equal");
+      return C(d[o], q, "$eq");
     }
   }
 
