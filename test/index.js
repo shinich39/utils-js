@@ -238,6 +238,7 @@ async function promiseOne() { return i++; }
 const promises = [promiseOne, promiseOne, promiseOne];
 utils.promiseAll(promises).then((res) => console.log("promiseAll", res));
 
-const dom = utils.strToDom(fs.readFileSync("./test/index.html", "utf8"));
+// const dom = utils.strToDom(fs.readFileSync("./test/index.html", "utf8"));
+const dom = utils.strToDom("Lorem ipsum dolor sit amet.<div>HI</div>Lorem ipsum dolor sit amet.");
 console.log("strToDom", dom);
 console.log("domToStr", utils.domToStr(dom));
