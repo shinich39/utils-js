@@ -2,8 +2,8 @@
 
 /**
  *
- * @param {array[]} data [[x, y], ...]
- * @param {number} time value between 0 and 1
+ * @param {array[]} data - [[x, y], ...]
+ * @param {number} time - value between 0 and 1
  * @returns {[x, y]}
  */
 function getBezierPoint(data, time) {
@@ -20,10 +20,10 @@ function getBezierPoint(data, time) {
 }
 /**
  *
- * @param {array[]} data [[x, y], ...]
- * @param {function} cb ([x, y], currentTime, Timeout) => { ... }
- * @param {number} time ms default 1000
- * @param {number} tick ms default 100
+ * @param {array[]} data - [[x, y], ...]
+ * @param {function} cb - ([x, y], currentTime, Timeout) => { ... }
+ * @param {number} time - ms default 1000
+ * @param {number} tick - ms default 100
  */
 function setAnimation(data, cb, time, tick) {
   if (!time) {

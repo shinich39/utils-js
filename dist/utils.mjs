@@ -42,8 +42,9 @@ function isString(obj) {
 function isEmptyString(obj) {
   return (
     isString(obj) &&
+    // trim
     obj.replace(/^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g, "") === ""
-  ); // trim
+  ); 
 }
 /**
  *
@@ -197,7 +198,7 @@ function isSameType(objA, objB) {
 }
 
 /**
- * Deep copy
+ * deep copy
  * @param {object|array} obj
  * @returns {object|array}
  */
@@ -218,7 +219,7 @@ function copyObject(obj) {
   return result;
 }
 /**
- * Array to object
+ * array to object
  * @param {object[]} arr
  * @param {string} key
  * @returns {object}
@@ -236,11 +237,24 @@ function groupByKey(arr, key) {
   return group;
 }
 /**
- * Query operator list:
- * $and, $nand, $or, $nor, $in, $nin, $gt, $gte, $lt, $lte, $eq, $ne, $exists, $fn, $re
  * https://www.mongodb.com/docs/manual/tutorial/query-documents/
  * @param {object} obj
  * @param {object} qry
+ * @param {object[]} qry.$and
+ * @param {object[]} qry.$nand
+ * @param {object[]} qry.$or
+ * @param {object[]} qry.$nor
+ * @param {any[]} qry.$in
+ * @param {any[]} qry.$nin
+ * @param {number} qry.$gt
+ * @param {number} qry.$gte
+ * @param {number} qry.$lt
+ * @param {number} qry.$lte
+ * @param {any} qry.$eq
+ * @param {any} qry.$ne
+ * @param {any} qry.$exists
+ * @param {function} qry.$fn
+ * @param {RegExp} qry.$re
  * @returns {boolean}
  */
 function queryObject(obj, qry) {
@@ -345,6 +359,79 @@ function queryObject(obj, qry) {
 
   return A(obj, qry);
 }
+/**
+ * 
+ * @param {object} obj 
+ * @param {object} updt 
+ * @param {object} updt.$set
+ * @param {object} updt.$unset
+ * @param {object} updt.$push
+ * @param {object} updt.$pushAll
+ * @param {object} updt.$pull
+ * @param {object} updt.$pullAll
+ * @param {object} updt.$addToSet
+ * @param {object} updt.$addToSetAll
+ */
+function updateObject(obj, updt) {
+  for (const operator of Object.keys(updt)) {
+    for (let [keys, value] of Object.entries(updt[operator])) {
+      keys = keys.split(".");
+
+      let target = obj,
+        key = keys.pop();
+
+      while (isObject(target) && keys.length > 0) {
+        target = target[keys.shift()];
+      }
+
+      if (!isObject(target)) {
+        continue;
+      }
+
+      if (operator === "$set") {
+        if (target[key] !== value) {
+          target[key] = value;
+        }
+      } else if (operator === "$unset") {
+        if (!!value) {
+          delete target[key];
+        }
+      } else if (operator === "$push") {
+        target[key].push(value);
+      } else if (operator === "$pushAll") {
+        for (const v of value) {
+          target[key].push(v);
+        }
+      } else if (operator === "$pull") {
+        for (let i = target[key].length; i >= 0; i--) {
+          if (target[key][i] === value) {
+            target[key].splice(i, 1);
+            break;
+          }
+        }
+      } else if (operator === "$pullAll") {
+        const prev = target[key];
+        target[key] = [];
+        for (const v of prev) {
+          if (value.indexOf(v) === -1) {
+            target[key].push(v);
+          }
+        }
+      } else if (operator === "$addToSet") {
+        if (target[key].indexOf(value) === -1) {
+          target[key].push(value);
+        }
+      } else if (operator === "$addToSetAll") {
+        for (const v of value) {
+          if (target[key].indexOf(v) === -1) {
+            target[key].push(v);
+          }
+        }
+      }
+    }
+  }
+  return obj;
+}
 
 /**
  *
@@ -388,13 +475,14 @@ function getContainedNumber(num, min, max) {
 }
 
 /**
- * Get diff between two strings.
+ * get diff between two strings
  * @param {string} strA
  * @param {string} strB
  * @returns {{ acc: number, result: Array<{ type: number, value: string }> }}
  */
 function compareString(strA, strB) {
-  // Create DP
+
+  // create dynamic table
   function C(a, b) {
     const dp = [];
     for (let i = 0; i < a.length + 1; i++) {
@@ -406,7 +494,7 @@ function compareString(strA, strB) {
     return dp;
   }
 
-  // Match a to b
+  // match a to b
   function M(dp, a, b) {
     for (let i = 1; i <= a.length; i++) {
       for (let j = 1; j <= b.length; j++) {
@@ -421,7 +509,7 @@ function compareString(strA, strB) {
     return dp;
   }
 
-  // Write diffs
+  // write diffs
   function P(dp, a, b) {
     let MATCH = 0,
       INSERT = 1,
@@ -436,7 +524,7 @@ function compareString(strA, strB) {
       const itemB = b[j - 1];
       if (i > 0 && j > 0 && itemA === itemB) {
         if (prev && prev.type === MATCH) {
-          prev.value = itemA + prev.value; // add to prev
+          prev.value = itemA + prev.value; 
         } else {
           res.push({ type: MATCH, value: itemA });
         }
@@ -445,14 +533,14 @@ function compareString(strA, strB) {
         j--;
       } else if (j > 0 && (i === 0 || dp[i][j - 1] >= dp[i - 1][j])) {
         if (prev && prev.type === INSERT) {
-          prev.value = itemB + prev.value; // add to prev
+          prev.value = itemB + prev.value; 
         } else {
           res.push({ type: INSERT, value: itemB });
         }
         j--;
       } else if (i > 0 && (j === 0 || dp[i][j - 1] < dp[i - 1][j])) {
         if (prev && prev.type === DELETE) {
-          prev.value = itemA + prev.value; // add to prev
+          prev.value = itemA + prev.value;
         } else {
           res.push({ type: DELETE, value: itemA });
         }
@@ -528,7 +616,7 @@ function compareObject(a, b) {
 }
 
 /**
- * Fill array to deepcopied values.
+ * fill array to deepcopied values
  * @param {number} len
  * @param {*} value
  * @returns {array}
@@ -569,7 +657,7 @@ function getMinValue(arr) {
   }, arr[0] || 0);
 }
 /**
- * Get maximum value in array.
+ * get maximum value in array
  * @param {number[]} arr
  * @returns {number}
  */
@@ -583,7 +671,7 @@ function getMaxValue(arr) {
   }, arr[0] || 0);
 }
 /**
- * Get arithmetic mean.
+ * get arithmetic mean
  * @param {number[]} arr
  * @returns {number}
  */
@@ -595,7 +683,7 @@ function getMeanValue(arr) {
   );
 }
 /**
- * Get most frequent value in array.
+ * get most frequent value in array
  * @param {any[]} arr
  * @returns {any}
  */
@@ -618,11 +706,10 @@ function getModeValue(arr) {
   return maxValue;
 }
 /**
- * Sort array ascending order.
- * Order of types:
- * [undefined, null, boolean, number, string, object, array, function]
+ * sort array ascending order  
+ * order: [undefined, null, boolean, number, string, object, array, function]
  * @param {array} arr
- * @param {boolean|undefined} desc descending
+ * @param {boolean|undefined} desc - descending
  * @returns {array}
  */
 function sortArray(arr, desc) {
@@ -638,7 +725,7 @@ function sortArray(arr, desc) {
 /**
  *
  * @param {object[]} arr
- * @param {string|string[]} sorter ["name", "-age", "height"]
+ * @param {string|string[]} sorter - e.g. ["name", "-age", "height"]
  * @returns
  */
 function sortBy(arr, sorter) {
@@ -676,7 +763,7 @@ function shuffleArray(arr) {
   return arr;
 }
 /**
- * Get random value in array.
+ * get random value in array
  * @param {array} arr
  * @returns {any}
  */
@@ -684,8 +771,8 @@ function getRandomValue(arr) {
   return arr[Math.floor(generateRandomNumber(0, arr.length))];
 }
 /**
- * Get all cases.
- * @param {array[]} arr e.g. [[1,2,3],[4,5,6,7],[8,9,10]]
+ * get all cases
+ * @param {array[]} arr - e.g. [[1,2,3],[4,5,6,7],[8,9,10]]
  * @returns {array}
  */
 function spreadArray(arr) {
@@ -702,13 +789,16 @@ function spreadArray(arr) {
 
   function getNextIndexes(a, indexes) {
     for (let i = a.length - 1; i >= 0; i--) {
-      // Decrease current index
+
+      // decrease current index
       if (indexes[i] < a[i].length - 1) {
         indexes[i] += 1;
         return indexes;
       }
-      // Reset current index
+
+      // reset current index
       indexes[i] = 0;
+      
     }
     return;
   }
@@ -736,8 +826,8 @@ function spreadArray(arr) {
 
 /**
  *
- * @param {array[]} data [[x, y], ...]
- * @param {number} time value between 0 and 1
+ * @param {array[]} data - [[x, y], ...]
+ * @param {number} time - value between 0 and 1
  * @returns {[x, y]}
  */
 function getBezierPoint(data, time) {
@@ -754,10 +844,10 @@ function getBezierPoint(data, time) {
 }
 /**
  *
- * @param {array[]} data [[x, y], ...]
- * @param {function} cb ([x, y], currentTime, Timeout) => { ... }
- * @param {number} time ms default 1000
- * @param {number} tick ms default 100
+ * @param {array[]} data - [[x, y], ...]
+ * @param {function} cb - ([x, y], currentTime, Timeout) => { ... }
+ * @param {number} time - ms default 1000
+ * @param {number} tick - ms default 100
  */
 function setAnimation(data, cb, time, tick) {
   if (!time) {
@@ -787,11 +877,11 @@ function setAnimation(data, cb, time, tick) {
 let __index = 0;
 
 /**
- * Generate object id
+ * generate object id  
  * https://www.mongodb.com/docs/manual/reference/method/ObjectId/
- * @param {number} time unix time: Date.now() / 1000
+ * @param {number} time - unix time: Date.now() / 1000
  * @param {number} index
- * @returns {string}
+ * @returns {string} 24 characters
  */
 function generateObjectId(time, index) {
   if (time) {
@@ -805,15 +895,18 @@ function generateObjectId(time, index) {
     __index = index;
   }
   return (
+    // 8 chars
     Math.floor(time).toString(16) +
+    // 10 chars
     "xxxxxxxxxx".replace(/x/g, function (v) {
       return Math.floor(Math.random() * 16).toString(16);
     }) +
+    // 6 chars
     Math.floor(index).toString(16).padStart(6, "0")
   );
 }
 /**
- * Generate uuid v4
+ * generate uuid v4
  * @returns {string}
  */
 function generateUUID() {
@@ -831,7 +924,7 @@ function generateUUID() {
 
 /**
  *
- * @param {number} delay ms
+ * @param {number} delay - ms
  * @returns {Promise<void>}
  */
 function wait(delay) {
@@ -841,7 +934,7 @@ function wait(delay) {
 }
 /**
  * https://stackoverflow.com/questions/24586110/resolve-promises-one-after-another-i-e-in-sequence
- * @param {function[]} funcs The functions will return promise.
+ * @param {function[]} funcs - the functions will return promise
  * @returns {Promise<array>}
  */
 function promiseAll(funcs) {
@@ -856,8 +949,8 @@ function promiseAll(funcs) {
 
 /**
  *
- * @param {{ width: number, height: number }} src source size
- * @param {{ width: number, height: number }} dst destination size
+ * @param {{ width: number, height: number }} src - source size
+ * @param {{ width: number, height: number }} dst - destination size
  * @returns {{ width: number, height: number }}
  */
 function getContainedSize(src, dst) {
@@ -876,8 +969,8 @@ function getContainedSize(src, dst) {
 }
 /**
  *
- * @param {{ width: number, height: number }} src source size
- * @param {{ width: number, height: number }} dst destination size
+ * @param {{ width: number, height: number }} src - source size
+ * @param {{ width: number, height: number }} dst - destination size
  * @returns {{ width: number, height: number }}
  */
 function getCoveredSize(src, dst) {
@@ -1072,7 +1165,7 @@ function toFullWidth(str) {
     .replace(/[^\S\r\n]/g, "　");
 }
 /**
- * Encrypt string with xor cipher
+ * encrypt string with xor cipher
  * @param {string} str
  * @param {string} salt
  * @returns {string}
@@ -1093,7 +1186,7 @@ function encryptString(str, salt) {
   return res;
 }
 /**
- * Parse string command to array.
+ * parse string command to array
  * @param {string} str
  * @returns {string[]}
  * @example
@@ -1135,7 +1228,7 @@ function parseCommand(str) {
   return result;
 }
 /**
- * Parse query string in url.
+ * parse query string in url.
  * @param {string} str
  * @returns {object}
  */
@@ -1153,8 +1246,8 @@ function parseQueryString(str) {
   return result;
 }
 /**
- * Parse $ + key in string.
- * Dot notation supported.
+ * parse $ + key in string  
+ * dot notation supported
  * @param {string} str
  * @param {object} obj
  * @returns {string}
@@ -1188,7 +1281,11 @@ function parseTemplate(str, obj) {
  * @returns {object}
  */
 function parsePath(str) {
-  // Normalize
+
+  // normalize path
+  // backslashes to slash
+  // remove last slash
+  // remove first dot
   str = str
     .replace(/[\\\/]+/g, "/")
     .replace(/\/$/, "")
@@ -1221,7 +1318,6 @@ function parsePath(str) {
   };
 }
 
-// HTML entities
 // https://www.w3schools.com/html/html_entities.asp
 const HTML_ENTITIES = [
   ["&", "&amp;"],
@@ -1352,11 +1448,12 @@ function parseTag(str) {
     let [key, value] = arr[i].split("=");
     if (key.length > 0) {
       if (typeof value === "string") {
-        // Escape quotation marks in attribute value
+        // escape quotation marks in attribute value
         result.attributes[key] = decodeStr(value);
       } else {
         // https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#boolean-attributes
-        // The values "true" and "false" are not allowed on boolean attributes. To represent a false value, the attribute has to be omitted altogether.
+        // the values "true" and "false" are not allowed on boolean attributes.
+        // to represent a false value, the attribute has to be omitted altogether.
         result.attributes[key] = true;
       }
     }
@@ -1365,6 +1462,11 @@ function parseTag(str) {
   return result;
 }
 
+/**
+ * 
+ * @param {string} str 
+ * @returns {object}
+ */
 function strToDom(str) {
   str = encodeAttributes(
     encodeContents(encodeScripts(convertComments(normalizeLineBreakers(str))))
@@ -1378,7 +1480,7 @@ function strToDom(str) {
     obj;
 
   while ((match = re.exec(str))) {
-    // Read text content
+    // read text content
     let content = str.substring(offset, match.index).trim();
     if (content.length > 0) {
       obj = {
@@ -1394,15 +1496,15 @@ function strToDom(str) {
       children.push(obj);
     }
 
-    // Read tag
+    // read tag
     obj = parseTag(match[0]);
     if (!obj.isClosing) {
-      // Tag is opening tag
+      // tag is opening tag
       children.push(obj);
       nodes.push(obj);
     } else {
-      // Tag is closing tag
-      // Add children to tag
+      // tag is closing tag
+      // add children to tag
       let i = findLastIndex(children, function (item) {
         return !item.isClosed && item.tag === obj.tag;
       });
@@ -1411,7 +1513,7 @@ function strToDom(str) {
         children[i].isClosed = true;
         children[i].children = children.splice(i + 1, children.length - i + 1);
 
-        // Decode contents of the scripts and comments
+        // decode contents of the scripts and comments
         if (["script", "!--"].indexOf(children[i].tag) > -1) {
           for (let j = 0; j < children[i].children.length; j++) {
             if (isText(children[i].children[j])) {
@@ -1427,6 +1529,7 @@ function strToDom(str) {
     offset = re.lastIndex;
   }
 
+  // read last content
   let lastContent = str.substring(offset).trim();
   if (lastContent.length > 0) {
     obj = {
@@ -1444,25 +1547,26 @@ function strToDom(str) {
 
   for (let node of nodes) {
     if (node.tag.toUpperCase() === "!DOCTYPE") {
-      // HTML doctype declaration
+      // html doctype declaration
       // https://www.w3schools.com/tags/tag_doctype.ASP
       node.closer = "";
     } else if (node.tag.toLowerCase() === "?xml") {
-      // XML Prolog
+      // xml Prolog
       // <?xml version="1.0" encoding="utf-8"?>
       // https://www.w3schools.com/xml/xml_syntax.asp
       node.closer = "?";
     } else if (node.tag === "!--") {
-      // Comment
+      // html comment
       // https://www.w3schools.com/tags/tag_comment.asp
       node.closer = "--";
     } else if (!node.isClosed) {
-      // Self-closing tag, Empty tag
-      // Requirements for XHTML
+      // self-closing tag, empty tag
+      // likes <img ... />
+      // required for xhtml
       node.closer = " /";
     }
 
-    // Remove unused attributes
+    // remove unused attributes
     delete node.isClosed;
     delete node.isClosing;
   }
@@ -1487,12 +1591,16 @@ function objToAttr(obj) {
   }
   return result;
 }
-
+/**
+ * 
+ * @param {object} obj 
+ * @returns {string}
+ */
 function domToStr(obj) {
   const { tag, closer, attributes, content, children } = obj;
   let result = "";
 
-  // Node
+  // node
   if (typeof tag === "string") {
     result += `<${tag}`;
 
@@ -1515,10 +1623,10 @@ function domToStr(obj) {
     } else {
       result += `</${tag}>`;
     }
-  } // TextContent
+  } // text content
   else if (typeof content === "string") {
     result = content;
-  } // Root Node
+  } // root Node
   else {
     if (Array.isArray(children)) {
       for (const child of children) {
@@ -1530,4 +1638,4 @@ function domToStr(obj) {
   return result;
 }
 
-export { compareObject, compareString, copyObject, createArray, domToStr, encryptString, fromBase64, generateObjectId, generateRandomNumber, generateRandomString, generateUUID, getBezierPoint, getClampedNumber, getContainedNumber, getContainedSize, getCoveredSize, getMaxValue, getMeanValue, getMinValue, getModeValue, getRandomValue, getRelativePath, groupByKey, isArray, isBoolean, isBooleanArray, isEmpty, isEmptyArray, isEmptyObject, isEmptyString, isFunction, isNull, isNumber, isNumberArray, isNumeric, isObject, isObjectArray, isSameType, isString, isStringArray, isUndefined, parseCommand, parsePath, parseQueryString, parseTemplate, promiseAll, queryObject, setAnimation, shuffleArray, sortArray, sortBy, splitFloat, splitInt, spreadArray, strToDom, toBase64, toFullWidth, toHalfWidth, wait };
+export { compareObject, compareString, copyObject, createArray, domToStr, encryptString, fromBase64, generateObjectId, generateRandomNumber, generateRandomString, generateUUID, getBezierPoint, getClampedNumber, getContainedNumber, getContainedSize, getCoveredSize, getMaxValue, getMeanValue, getMinValue, getModeValue, getRandomValue, getRelativePath, groupByKey, isArray, isBoolean, isBooleanArray, isEmpty, isEmptyArray, isEmptyObject, isEmptyString, isFunction, isNull, isNumber, isNumberArray, isNumeric, isObject, isObjectArray, isSameType, isString, isStringArray, isUndefined, parseCommand, parsePath, parseQueryString, parseTemplate, promiseAll, queryObject, setAnimation, shuffleArray, sortArray, sortBy, splitFloat, splitInt, spreadArray, strToDom, toBase64, toFullWidth, toHalfWidth, updateObject, wait };

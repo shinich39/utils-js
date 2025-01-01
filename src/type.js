@@ -44,8 +44,9 @@ function isString(obj) {
 function isEmptyString(obj) {
   return (
     isString(obj) &&
+    // trim
     obj.replace(/^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g, "") === ""
-  ); // trim
+  ); 
 }
 /**
  *

@@ -2,7 +2,7 @@
 
 /**
  *
- * @param {number} delay ms
+ * @param {number} delay - ms
  * @returns {Promise<void>}
  */
 function wait(delay) {
@@ -12,7 +12,7 @@ function wait(delay) {
 }
 /**
  * https://stackoverflow.com/questions/24586110/resolve-promises-one-after-another-i-e-in-sequence
- * @param {function[]} funcs The functions will return promise.
+ * @param {function[]} funcs - the functions will return promise
  * @returns {Promise<array>}
  */
 function promiseAll(funcs) {

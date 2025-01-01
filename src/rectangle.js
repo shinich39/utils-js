@@ -2,8 +2,8 @@
 
 /**
  *
- * @param {{ width: number, height: number }} src source size
- * @param {{ width: number, height: number }} dst destination size
+ * @param {{ width: number, height: number }} src - source size
+ * @param {{ width: number, height: number }} dst - destination size
  * @returns {{ width: number, height: number }}
  */
 function getContainedSize(src, dst) {
@@ -22,8 +22,8 @@ function getContainedSize(src, dst) {
 }
 /**
  *
- * @param {{ width: number, height: number }} src source size
- * @param {{ width: number, height: number }} dst destination size
+ * @param {{ width: number, height: number }} src - source size
+ * @param {{ width: number, height: number }} dst - destination size
  * @returns {{ width: number, height: number }}
  */
 function getCoveredSize(src, dst) {

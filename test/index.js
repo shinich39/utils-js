@@ -228,6 +228,18 @@ console.log("queryObject", utils.queryObject({
   }],
 }));
 
+console.log(utils.updateObject({
+  name: "John", age: 18, tags: [], attr: { pet: "none" }
+}, {
+  $set: {
+    name: "Bob",
+    "attr.pet": "Dog"
+  },
+  $pushAll: {
+    tags: [1,2,3]
+  },
+}));
+
 console.log("getContainedSize", utils.getContainedSize({ width: 5, height: 10 }, { width: 20, height: 20 }));
 console.log("getCoveredSize", utils.getCoveredSize({ width: 5, height: 10 }, { width: 20, height: 20 }));
 
@@ -239,6 +251,6 @@ const promises = [promiseOne, promiseOne, promiseOne];
 utils.promiseAll(promises).then((res) => console.log("promiseAll", res));
 
 // const dom = utils.strToDom(fs.readFileSync("./test/index.html", "utf8"));
-const dom = utils.strToDom("Lorem ipsum dolor sit amet.<div>HI</div>Lorem ipsum dolor sit amet.");
+const dom = utils.strToDom("  <div>HI</div>  ");
 console.log("strToDom", dom);
 console.log("domToStr", utils.domToStr(dom));

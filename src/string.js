@@ -180,7 +180,7 @@ function toFullWidth(str) {
     .replace(/[^\S\r\n]/g, "　");
 }
 /**
- * Encrypt string with xor cipher
+ * encrypt string with xor cipher
  * @param {string} str
  * @param {string} salt
  * @returns {string}
@@ -201,7 +201,7 @@ function encryptString(str, salt) {
   return res;
 }
 /**
- * Parse string command to array.
+ * parse string command to array
  * @param {string} str
  * @returns {string[]}
  * @example
@@ -243,7 +243,7 @@ function parseCommand(str) {
   return result;
 }
 /**
- * Parse query string in url.
+ * parse query string in url.
  * @param {string} str
  * @returns {object}
  */
@@ -261,8 +261,8 @@ function parseQueryString(str) {
   return result;
 }
 /**
- * Parse $ + key in string.
- * Dot notation supported.
+ * parse $ + key in string  
+ * dot notation supported
  * @param {string} str
  * @param {object} obj
  * @returns {string}
@@ -296,7 +296,11 @@ function parseTemplate(str, obj) {
  * @returns {object}
  */
 function parsePath(str) {
-  // Normalize
+
+  // normalize path
+  // backslashes to slash
+  // remove last slash
+  // remove first dot
   str = str
     .replace(/[\\\/]+/g, "/")
     .replace(/\/$/, "")

@@ -6,7 +6,7 @@ import { generateRandomNumber } from "./number.js";
 import { compareObject } from "./compare.js";
 
 /**
- * Fill array to deepcopied values.
+ * fill array to deepcopied values
  * @param {number} len
  * @param {*} value
  * @returns {array}
@@ -47,7 +47,7 @@ function getMinValue(arr) {
   }, arr[0] || 0);
 }
 /**
- * Get maximum value in array.
+ * get maximum value in array
  * @param {number[]} arr
  * @returns {number}
  */
@@ -61,7 +61,7 @@ function getMaxValue(arr) {
   }, arr[0] || 0);
 }
 /**
- * Get arithmetic mean.
+ * get arithmetic mean
  * @param {number[]} arr
  * @returns {number}
  */
@@ -73,7 +73,7 @@ function getMeanValue(arr) {
   );
 }
 /**
- * Get most frequent value in array.
+ * get most frequent value in array
  * @param {any[]} arr
  * @returns {any}
  */
@@ -96,11 +96,10 @@ function getModeValue(arr) {
   return maxValue;
 }
 /**
- * Sort array ascending order.
- * Order of types:
- * [undefined, null, boolean, number, string, object, array, function]
+ * sort array ascending order  
+ * order: [undefined, null, boolean, number, string, object, array, function]
  * @param {array} arr
- * @param {boolean|undefined} desc descending
+ * @param {boolean|undefined} desc - descending
  * @returns {array}
  */
 function sortArray(arr, desc) {
@@ -116,7 +115,7 @@ function sortArray(arr, desc) {
 /**
  *
  * @param {object[]} arr
- * @param {string|string[]} sorter ["name", "-age", "height"]
+ * @param {string|string[]} sorter - e.g. ["name", "-age", "height"]
  * @returns
  */
 function sortBy(arr, sorter) {
@@ -154,7 +153,7 @@ function shuffleArray(arr) {
   return arr;
 }
 /**
- * Get random value in array.
+ * get random value in array
  * @param {array} arr
  * @returns {any}
  */
@@ -162,8 +161,8 @@ function getRandomValue(arr) {
   return arr[Math.floor(generateRandomNumber(0, arr.length))];
 }
 /**
- * Get all cases.
- * @param {array[]} arr e.g. [[1,2,3],[4,5,6,7],[8,9,10]]
+ * get all cases
+ * @param {array[]} arr - e.g. [[1,2,3],[4,5,6,7],[8,9,10]]
  * @returns {array}
  */
 function spreadArray(arr) {
@@ -180,13 +179,16 @@ function spreadArray(arr) {
 
   function getNextIndexes(a, indexes) {
     for (let i = a.length - 1; i >= 0; i--) {
-      // Decrease current index
+
+      // decrease current index
       if (indexes[i] < a[i].length - 1) {
         indexes[i] += 1;
         return indexes;
       }
-      // Reset current index
+
+      // reset current index
       indexes[i] = 0;
+      
     }
     return;
   }

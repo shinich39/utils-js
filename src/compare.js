@@ -12,13 +12,14 @@ import {
 } from "./type.js";
 
 /**
- * Get diff between two strings.
+ * get diff between two strings
  * @param {string} strA
  * @param {string} strB
  * @returns {{ acc: number, result: Array<{ type: number, value: string }> }}
  */
 function compareString(strA, strB) {
-  // Create DP
+
+  // create dynamic table
   function C(a, b) {
     const dp = [];
     for (let i = 0; i < a.length + 1; i++) {
@@ -30,7 +31,7 @@ function compareString(strA, strB) {
     return dp;
   }
 
-  // Match a to b
+  // match a to b
   function M(dp, a, b) {
     for (let i = 1; i <= a.length; i++) {
       for (let j = 1; j <= b.length; j++) {
@@ -45,7 +46,7 @@ function compareString(strA, strB) {
     return dp;
   }
 
-  // Write diffs
+  // write diffs
   function P(dp, a, b) {
     let MATCH = 0,
       INSERT = 1,
@@ -60,7 +61,7 @@ function compareString(strA, strB) {
       const itemB = b[j - 1];
       if (i > 0 && j > 0 && itemA === itemB) {
         if (prev && prev.type === MATCH) {
-          prev.value = itemA + prev.value; // add to prev
+          prev.value = itemA + prev.value; 
         } else {
           res.push({ type: MATCH, value: itemA });
         }
@@ -69,14 +70,14 @@ function compareString(strA, strB) {
         j--;
       } else if (j > 0 && (i === 0 || dp[i][j - 1] >= dp[i - 1][j])) {
         if (prev && prev.type === INSERT) {
-          prev.value = itemB + prev.value; // add to prev
+          prev.value = itemB + prev.value; 
         } else {
           res.push({ type: INSERT, value: itemB });
         }
         j--;
       } else if (i > 0 && (j === 0 || dp[i][j - 1] < dp[i - 1][j])) {
         if (prev && prev.type === DELETE) {
-          prev.value = itemA + prev.value; // add to prev
+          prev.value = itemA + prev.value;
         } else {
           res.push({ type: DELETE, value: itemA });
         }
