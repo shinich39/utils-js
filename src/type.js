@@ -54,7 +54,7 @@ function isEmptyString(obj) {
  * @returns {boolean}
  */
 function isObject(obj) {
-  return typeof obj === "object" && obj !== null;
+  return typeof obj === "object" && obj !== null && !isArray(obj);
   // return (
   //   typeof obj === "object" &&
   //   obj !== null &&

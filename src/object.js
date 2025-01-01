@@ -15,13 +15,42 @@ function copyObject(obj) {
     result = {};
   }
   for (const [key, value] of Object.entries(obj)) {
-    if (isObject(value)) {
+    if (isObject(value) || isArray(value)) {
       result[key] = copyObject(value);
     } else {
       result[key] = value;
     }
   }
   return result;
+}
+/**
+ * 
+ * @param {object|array} obj 
+ * @returns {array}
+ */
+function objectEntries(obj) {
+  const A = function(acc, cur, prevKey) {
+    for (const [key, value] of Object.entries(cur)) {
+      B(acc, prevKey, key, value);
+    }
+    return acc;
+  }
+
+  const B = function(acc, prevKey, currKey, currValue) {
+    let nextKey;
+    if (!prevKey) {
+      nextKey = currKey;
+    } else {
+      nextKey = prevKey + "." + currKey;
+    }
+    if (isObject(currValue) || isArray(currValue)) {
+      A(acc, currValue, nextKey);
+    } else {
+      acc[nextKey] = currValue;
+    }
+  }
+
+  return A({}, obj);
 }
 /**
  * array to object
@@ -238,4 +267,4 @@ function updateObject(obj, updt) {
   return obj;
 }
 
-export { copyObject, groupByKey, queryObject, updateObject };
+export { copyObject, objectEntries, groupByKey, queryObject, updateObject };

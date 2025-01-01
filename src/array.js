@@ -179,7 +179,6 @@ function spreadArray(arr) {
 
   function getNextIndexes(a, indexes) {
     for (let i = a.length - 1; i >= 0; i--) {
-
       // decrease current index
       if (indexes[i] < a[i].length - 1) {
         indexes[i] += 1;
@@ -188,7 +187,6 @@ function spreadArray(arr) {
 
       // reset current index
       indexes[i] = 0;
-      
     }
     return;
   }

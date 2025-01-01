@@ -177,11 +177,27 @@ console.log("spreadArray", utils.spreadArray([
   [8, 9, 10],
 ]));
 
-console.log("copyObject", utils.copyObject( {
+console.log("copyObject", utils.copyObject({
   a: {
     b: "A",
   },
 }));
+
+// const origin = [1,2,[3,4]];
+// const clone = utils.copyObject(origin);
+// clone[2][0] = 5;
+// console.log("copyObject", origin, clone);
+
+console.log("objectEntries", utils.objectEntries([
+  [
+    [1,2],
+  ],
+  {
+    "1": 1,
+    "2": 2,
+  }
+]
+));
 
 console.log("groupByKey", utils.groupByKey([
   { name: "john", age: 10 },
@@ -228,7 +244,7 @@ console.log("queryObject", utils.queryObject({
   }],
 }));
 
-console.log(utils.updateObject({
+console.log("updateObject", utils.updateObject({
   name: "John", age: 18, tags: [], attr: { pet: "none" }
 }, {
   $set: {

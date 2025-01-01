@@ -54,7 +54,7 @@ function isEmptyString(obj) {
  * @returns {boolean}
  */
 function isObject(obj) {
-  return typeof obj === "object" && obj !== null;
+  return typeof obj === "object" && obj !== null && !isArray(obj);
   // return (
   //   typeof obj === "object" &&
   //   obj !== null &&
@@ -212,13 +212,42 @@ function copyObject(obj) {
     result = {};
   }
   for (const [key, value] of Object.entries(obj)) {
-    if (isObject(value)) {
+    if (isObject(value) || isArray(value)) {
       result[key] = copyObject(value);
     } else {
       result[key] = value;
     }
   }
   return result;
+}
+/**
+ * 
+ * @param {object|array} obj 
+ * @returns {array}
+ */
+function objectEntries(obj) {
+  const A = function(acc, cur, prevKey) {
+    for (const [key, value] of Object.entries(cur)) {
+      B(acc, prevKey, key, value);
+    }
+    return acc;
+  };
+
+  const B = function(acc, prevKey, currKey, currValue) {
+    let nextKey;
+    if (!prevKey) {
+      nextKey = currKey;
+    } else {
+      nextKey = prevKey + "." + currKey;
+    }
+    if (isObject(currValue) || isArray(currValue)) {
+      A(acc, currValue, nextKey);
+    } else {
+      acc[nextKey] = currValue;
+    }
+  };
+
+  return A({}, obj);
 }
 /**
  * array to object
@@ -791,7 +820,6 @@ function spreadArray(arr) {
 
   function getNextIndexes(a, indexes) {
     for (let i = a.length - 1; i >= 0; i--) {
-
       // decrease current index
       if (indexes[i] < a[i].length - 1) {
         indexes[i] += 1;
@@ -800,7 +828,6 @@ function spreadArray(arr) {
 
       // reset current index
       indexes[i] = 0;
-      
     }
     return;
   }
@@ -1681,6 +1708,7 @@ exports.isSameType = isSameType;
 exports.isString = isString;
 exports.isStringArray = isStringArray;
 exports.isUndefined = isUndefined;
+exports.objectEntries = objectEntries;
 exports.parseCommand = parseCommand;
 exports.parsePath = parsePath;
 exports.parseQueryString = parseQueryString;
